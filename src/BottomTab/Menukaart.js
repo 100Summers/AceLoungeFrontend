@@ -1,8 +1,17 @@
 import * as React from "react";
-import { View, useWindowDimensions, Text, StyleSheet } from "react-native";
+import {
+  View,
+  useWindowDimensions,
+  Text,
+  StyleSheet,
+  Pressable,
+  Button,
+  TouchableNativeFeedback,
+} from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../Components/Header";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const renderTabBar = (props) => (
   <TabBar
@@ -35,7 +44,14 @@ const FirstRoute = () => (
       paddingHorizontal: 20,
     }}
   >
-    <Text>Tab One</Text>
+    <View style={styles.menuItems}>
+      <View style={styles.menuItem}>
+        <View style={styles.menuItemGroup}>
+          <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
+          <Text style={styles.menuItemPrice}>SRD 100</Text>
+        </View>
+      </View>
+    </View>
   </View>
 );
 
@@ -110,5 +126,27 @@ const styles = StyleSheet.create({
   tabs: {
     padding: 0,
     textTransform: "",
+  },
+  menuItems: {},
+  menuItem: {
+    flexDirection: "column",
+    backgroundColor: "white",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+
+    borderWidth: 1,
+    borderColor: "#e27b00",
+    borderRadius: 3,
+  },
+  menuItemGroup: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+  },
+  menuItemTitle: {
+    fontWeight: "500",
+    fontSize: 15,
+  },
+  menuItemPrice: {
+    color: "#e27b00",
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,6 @@ import {
 import { Formik } from "formik";
 import * as yup from "yup";
 import { Picker } from "@react-native-picker/picker";
-import ProductSearchDropDown from "./ProductSearchDropDown";
 
 const NieuweBestellingForm = () => {
   const [dataSource] = useState([
@@ -26,22 +25,35 @@ const NieuweBestellingForm = () => {
   ]);
   const [filtered, setFiltered] = useState(dataSource);
   const [searching, setSearching] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  useEffect(() => {
+    // Filter data source initially when component mounts
+    setFiltered(dataSource);
+  }, []);
 
   const onSearch = (text) => {
     if (text) {
       setSearching(true); //to show dropdown make it true
       const temp = text.toLowerCase(); //making text lowercase to search
       //filter main dataSource and put result in temp array
-      const tempList = dataSource.filter((item) => {
-        if (item.match(temp)) return item;
-      });
+      const tempList = dataSource.filter((item) =>
+        item.toLowerCase().includes(temp)
+      );
       //at the end of search setFiltered array to searched temp array.
       setFiltered(tempList);
     }
     //if nothing was searched
     else {
-      setSearching(false); //set searching to false
+      setSearching(true); // Keep dropdown visible if search bar is empty
+      setFiltered(dataSource); // Show all options when search bar is empty
     }
+  };
+
+  const handleItemPress = (item) => {
+    setSelectedItems([...selectedItems, item]);
+    setSearching(false); // Close dropdown after item selection
   };
 
   return (
@@ -76,26 +88,20 @@ const NieuweBestellingForm = () => {
           </View>
 
           <View>
-            <Text style={styles.label}>Kies product(en):</Text>
-            <View>
-              <TextInput
-                style={styles.textinput}
-                placeholder="Selecteer product(en)..."
-                onChangeText={onSearch}
-              />
+            <View style={{ marginBottom: 20 }}>
+              <Text style={{ fontWeight: "600" }}>Geselecteerd:</Text>
+              {selectedItems.map((item, index) => (
+                <Text style={styles.addeditems} key={index}>
+                  {item}
+                </Text>
+              ))}
             </View>
-
-            {searching && (
-              <ProductSearchDropDown
-                onPress={() => setSearching(false)}
-                dataSource={filtered}
-              />
-            )}
+            <Text style={styles.label}>Kies product(en):</Text>
           </View>
 
-          {/* <Pressable style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttontext}>Klaar</Text>
-          </Pressable> */}
+          <Pressable style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttontext}>Bestelling opslaan</Text>
+          </Pressable>
         </View>
       )}
     </Formik>
@@ -108,10 +114,17 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#e27b00",
     padding: 15,
+    position: "absolute",
+    borderRadius: 3,
+    top: 470,
+    elevation: 0,
+    zIndex: -10,
+    width: "100%",
   },
   buttontext: {
     color: "white",
     textAlign: "center",
+    fontWeight: "500",
   },
   select: {
     borderWidth: 1,
@@ -128,6 +141,7 @@ const styles = StyleSheet.create({
   selectoption: {},
   label: {
     marginBottom: 7,
+    fontWeight: "600",
   },
   textinput: {
     borderWidth: 1,
@@ -135,5 +149,8 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     height: 58,
     padding: 15,
+  },
+  addeditems: {
+    paddingVertical: 10,
   },
 });

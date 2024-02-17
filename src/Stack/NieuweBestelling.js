@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import React from "react";
 //import Header from "../Components/Header";
 import NieuweBestellingForm from "../Components/NieuweBestellingForm";
@@ -7,13 +14,15 @@ const NieuweBestelling = () => {
   return (
     <View style={styles.container}>
       {/* <Header name="Detail" /> */}
-      <Text style={styles.descriptiontext}>
-        Voeg een nieuwe bestelling toe. Selecteer een tafel, kies de producten
-        en voeg een notitie toe. Het totaalbedrag wordt onderaan getoond.
-      </Text>
-      <View style={styles.form}>
-        <NieuweBestellingForm />
-      </View>
+      <ScrollView>
+        <Text style={styles.descriptiontext}>
+          Voeg een nieuwe bestelling toe. Selecteer een tafel, kies de producten
+          en voeg een notitie toe. Het totaalbedrag wordt onderaan getoond.
+        </Text>
+        <View style={styles.form}>
+          <NieuweBestellingForm />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -30,5 +39,9 @@ const styles = StyleSheet.create({
   },
   descriptiontext: {
     marginBottom: 40,
+  },
+  form: {
+    flexDirection: "column",
+    height: 700,
   },
 });
