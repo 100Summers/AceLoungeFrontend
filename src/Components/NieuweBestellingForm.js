@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableNativeFeedback,
   ScrollView,
+  Modal,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { Formik } from "formik";
@@ -258,6 +259,8 @@ export function TabViewExample() {
 }
 
 const NieuweBestellingForm = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View>
       <Formik
@@ -299,9 +302,48 @@ const NieuweBestellingForm = () => {
               <TabViewExample />
             </View>
 
-            <Pressable style={styles.savebutton} onPress={handleSubmit}>
-              <Text style={styles.buttontext}>Bestelling opslaan</Text>
+            {/* <Pressable style={styles.savebutton} onPress={handleSubmit}> */}
+            <Pressable
+              style={styles.savebutton}
+              onPress={() => setModalVisible(true)}
+            >
+              <Text style={styles.buttontext}>Check order</Text>
             </Pressable>
+
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                console.log("Modal has been closed.");
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Pressable
+                    style={styles.backbutton}
+                    onPress={() => setModalVisible(!modalVisible)}
+                  >
+                    <MaterialCommunityIcons
+                      color="black"
+                      size={25}
+                      name="arrow-left"
+                      style={{ marginTop: 0 }}
+                    />
+                    <Text style={styles.backbuttontext}>Back</Text>
+                  </Pressable>
+                  <Text style={styles.modalText}>
+                    SHOW ORDER SUMMARY HERE. PRODUCTS + OPTIONS + PRICE PER
+                    PRODUCT + TOTAL PRICE + PAYMENT METHOD
+                  </Text>
+
+                  <Pressable style={styles.submitbutton} onPress={handleSubmit}>
+                    <Text style={styles.buttontext}>Send order</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Modal>
           </View>
         )}
       </Formik>
@@ -398,5 +440,47 @@ const styles = StyleSheet.create({
     top: 5,
     borderRadius: 3,
     backgroundColor: "#e27b00",
+  },
+  submitbutton: {
+    //borderWidth: 1,
+    borderColor: "grey",
+    padding: 15,
+    margin: 15,
+    position: "absolute",
+    borderRadius: 3,
+    backgroundColor: "#e27b00",
+    justifyContent: "center",
+    alignItems: "center",
+    bottom: 10, //Here is the trick
+    width: "100%",
+  },
+  centeredView: {
+    flex: 1,
+    //justifyContent: "center",
+    //alignItems: "center",
+    position: "relative",
+    top: 70,
+  },
+  modalView: {
+    width: "90%",
+    height: "60%",
+    position: "relative",
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 15,
+    //alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  backbutton: { flexDirection: "row", marginBottom: 50 },
+  backbuttontext: {
+    fontSize: 15,
   },
 });
