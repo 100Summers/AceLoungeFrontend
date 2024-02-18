@@ -48,7 +48,7 @@ const FirstRoute = () => (
       <View style={styles.menuItem}>
         <View style={styles.menuItemGroup}>
           <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
-          <Text style={styles.menuItemPrice}>SRD 100</Text>
+          <Text style={styles.menuItemPrice}>$100</Text>
         </View>
       </View>
     </View>
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   menuItemTitle: {
     fontWeight: "500",
-    fontSize: 15,
+    fontSize: 14,
   },
   menuItemPrice: {
     color: "#e27b00",
