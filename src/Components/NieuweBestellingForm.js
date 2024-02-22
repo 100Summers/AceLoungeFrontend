@@ -10,6 +10,7 @@ import {
   TouchableNativeFeedback,
   ScrollView,
   Modal,
+  FlatList,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { Formik } from "formik";
@@ -44,189 +45,311 @@ const renderTabBar = (props) => (
   />
 );
 
-const FirstRoute = () => (
-  <View
-    style={{
-      flex: 1,
-      paddingTop: 0,
-      paddingHorizontal: 0,
-      height: 500,
-    }}
-  >
-    <ScrollView style={styles.menuItems} nestedScrollEnabled={true}>
-      <View style={styles.menuItem}>
-        <View style={styles.menuItemGroup}>
-          <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
-          <TouchableNativeFeedback>
-            <View style={styles.buybutton}>
-              <MaterialCommunityIcons
-                color="white"
-                size={25}
-                name="plus"
-                style={{ marginTop: 0 }}
-              />
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-        <Text style={styles.menuItemPrice}>$100</Text>
-      </View>
-      <View style={styles.menuItem}>
-        <View style={styles.menuItemGroup}>
-          <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
-          <TouchableNativeFeedback>
-            <View style={styles.buybutton}>
-              <MaterialCommunityIcons
-                color="white"
-                size={25}
-                name="plus"
-                style={{ marginTop: 0 }}
-              />
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-        <Text style={styles.menuItemPrice}>$100</Text>
-      </View>
-      <View style={styles.menuItem}>
-        <View style={styles.menuItemGroup}>
-          <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
-          <TouchableNativeFeedback>
-            <View style={styles.buybutton}>
-              <MaterialCommunityIcons
-                color="white"
-                size={25}
-                name="plus"
-                style={{ marginTop: 0 }}
-              />
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-        <Text style={styles.menuItemPrice}>$100</Text>
-      </View>
-      <View style={styles.menuItem}>
-        <View style={styles.menuItemGroup}>
-          <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
-          <TouchableNativeFeedback>
-            <View style={styles.buybutton}>
-              <MaterialCommunityIcons
-                color="white"
-                size={25}
-                name="plus"
-                style={{ marginTop: 0 }}
-              />
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-        <Text style={styles.menuItemPrice}>$100</Text>
-      </View>
-      <View style={styles.menuItem}>
-        <View style={styles.menuItemGroup}>
-          <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
-          <TouchableNativeFeedback>
-            <View style={styles.buybutton}>
-              <MaterialCommunityIcons
-                color="white"
-                size={25}
-                name="plus"
-                style={{ marginTop: 0 }}
-              />
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-        <Text style={styles.menuItemPrice}>$100</Text>
-      </View>
-      <View style={styles.menuItem}>
-        <View style={styles.menuItemGroup}>
-          <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
-          <TouchableNativeFeedback>
-            <View style={styles.buybutton}>
-              <MaterialCommunityIcons
-                color="white"
-                size={25}
-                name="plus"
-                style={{ marginTop: 0 }}
-              />
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-        <Text style={styles.menuItemPrice}>$100</Text>
-      </View>
-      <View style={styles.menuItem}>
-        <View style={styles.menuItemGroup}>
-          <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
-          <TouchableNativeFeedback>
-            <View style={styles.buybutton}>
-              <MaterialCommunityIcons
-                color="white"
-                size={25}
-                name="plus"
-                style={{ marginTop: 0 }}
-              />
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-        <Text style={styles.menuItemPrice}>$100</Text>
-      </View>
-      <View style={styles.menuItem}>
-        <View style={styles.menuItemGroup}>
-          <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
-          <TouchableNativeFeedback>
-            <View style={styles.buybutton}>
-              <MaterialCommunityIcons
-                color="white"
-                size={25}
-                name="plus"
-                style={{ marginTop: 0 }}
-              />
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-        <Text style={styles.menuItemPrice}>$100</Text>
-      </View>
-      <View style={styles.menuItem}>
-        <View style={styles.menuItemGroup}>
-          <Text style={styles.menuItemTitle}>Coca Cola (Blik 33cl)</Text>
-          <TouchableNativeFeedback>
-            <View style={styles.buybutton}>
-              <MaterialCommunityIcons
-                color="white"
-                size={25}
-                name="plus"
-                style={{ marginTop: 0 }}
-              />
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-        <Text style={styles.menuItemPrice}>$100</Text>
-      </View>
-    </ScrollView>
-  </View>
-);
+const FirstRoute = () => {
+  const [menuItems, setMenuItems] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState({});
 
-const SecondRoute = () => (
-  <View
-    style={{
-      flex: 1,
-      backgroundColor: "#e0d5d6",
-      paddingTop: 30,
-      paddingHorizontal: 20,
-    }}
-  >
-    <Text>Tab 2</Text>
-  </View>
-);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://nl-app.onrender.com/products/categories/food"
+        );
+        const data = await response.json();
+        setMenuItems(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-const ThirdRoute = () => (
-  <View
-    style={{
-      flex: 1,
-      backgroundColor: "#e0d5d6",
-      paddingTop: 30,
-      paddingHorizontal: 20,
-    }}
-  >
-    <Text>Tab 3</Text>
-  </View>
-);
+    fetchData();
+  }, []);
+
+  const handleSelectOption = (menuItemIndex, optionIndex, optionPrice) => {
+    setSelectedOptions((prevSelectedOptions) => {
+      const optionKey = `${menuItemIndex}-${optionIndex}`;
+      const currentOption = prevSelectedOptions[optionKey] || {
+        quantity: 0,
+        price: optionPrice,
+      };
+      const newQuantity = currentOption.quantity > 0 ? 0 : 1; // Toggle between 0 and 1
+      return {
+        ...prevSelectedOptions,
+        [optionKey]: {
+          ...currentOption,
+          quantity: newQuantity,
+        },
+      };
+    });
+  };
+
+  const renderMenuItemOptions = (menuItem, menuItemIndex) => {
+    return menuItem.options.map((option, optionIndex) => {
+      const optionKey = `${menuItemIndex}-${optionIndex}`;
+      const isSelected =
+        selectedOptions[optionKey] && selectedOptions[optionKey].quantity > 0;
+
+      return (
+        <Pressable
+          key={optionIndex}
+          onPress={() =>
+            handleSelectOption(menuItemIndex, optionIndex, option.price)
+          }
+          style={styles.menuItemOption}
+        >
+          <View style={styles.checkbox}>
+            {isSelected && (
+              <MaterialCommunityIcons name="check" size={20} color="black" />
+            )}
+          </View>
+          <Text style={styles.menuItemOptionName}>{option.name}</Text>
+          <Text style={styles.menuItemOptionPrice}>{option.price}</Text>
+        </Pressable>
+      );
+    });
+  };
+
+  return (
+    <View style={{ flex: 1, paddingTop: 0, paddingHorizontal: 0, height: 500 }}>
+      <ScrollView style={styles.menuItems} nestedScrollEnabled={true}>
+        {menuItems.map((menuItem, index) => {
+          const totalItemPrice =
+            (menuItem.price || 0) +
+            Object.keys(selectedOptions).reduce((acc, key) => {
+              if (key.startsWith(`${index}-`)) {
+                acc +=
+                  selectedOptions[key].price * selectedOptions[key].quantity;
+              }
+              return acc;
+            }, 0);
+          return (
+            <View key={index} style={styles.menuItem}>
+              <View style={styles.menuItemGroup}>
+                <Text style={styles.menuItemTitle}>{menuItem.title}</Text>
+                <TouchableNativeFeedback>
+                  <View style={styles.buybutton}>
+                    <MaterialCommunityIcons
+                      color="white"
+                      size={25}
+                      name="plus"
+                      style={{ marginTop: 0 }}
+                    />
+                  </View>
+                </TouchableNativeFeedback>
+              </View>
+              <Text style={styles.menuItemName}>{menuItem.name}</Text>
+              <Text style={styles.menuItemName}>{menuItem.ingredients}</Text>
+              {menuItem.options && renderMenuItemOptions(menuItem, index)}
+              <Text style={styles.menuItemPrice}>
+                Total: {totalItemPrice.toFixed(2)}
+              </Text>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+};
+
+const SecondRoute = () => {
+  const [menuItems, setMenuItems] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://nl-app.onrender.com/products/categories/food"
+        );
+        const data = await response.json();
+        setMenuItems(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSelectOption = (menuItemIndex, optionIndex, optionPrice) => {
+    setSelectedOptions((prevSelectedOptions) => {
+      const optionKey = `${menuItemIndex}-${optionIndex}`;
+      const currentOption = prevSelectedOptions[optionKey] || {
+        quantity: 0,
+        price: optionPrice,
+      };
+      return {
+        ...prevSelectedOptions,
+        [optionKey]: {
+          ...currentOption,
+          quantity: currentOption.quantity + 1,
+        },
+      };
+    });
+  };
+
+  const renderMenuItemOptions = (menuItem, menuItemIndex) => {
+    return menuItem.options.map((option, optionIndex) => (
+      <Pressable
+        key={optionIndex}
+        onPress={() =>
+          handleSelectOption(menuItemIndex, optionIndex, option.price)
+        }
+      >
+        <View style={styles.menuItemOption}>
+          <Text style={styles.menuItemOptionName}>{option.name}</Text>
+          <Text style={styles.menuItemOptionPrice}>{option.price}</Text>
+          <Text style={styles.menuItemOptionQuantity}>
+            {selectedOptions[`${menuItemIndex}-${optionIndex}`]
+              ? selectedOptions[`${menuItemIndex}-${optionIndex}`].quantity
+              : 0}
+          </Text>
+        </View>
+      </Pressable>
+    ));
+  };
+
+  return (
+    <View style={{ flex: 1, paddingTop: 0, paddingHorizontal: 0, height: 500 }}>
+      <ScrollView style={styles.menuItems} nestedScrollEnabled={true}>
+        {menuItems.map((menuItem, index) => {
+          const totalItemPrice =
+            (menuItem.price || 0) +
+            Object.keys(selectedOptions).reduce((acc, key) => {
+              if (key.startsWith(`${index}-`)) {
+                acc +=
+                  selectedOptions[key].price * selectedOptions[key].quantity;
+              }
+              return acc;
+            }, 0);
+          return (
+            <View key={index} style={styles.menuItem}>
+              <View style={styles.menuItemGroup}>
+                <Text style={styles.menuItemTitle}>{menuItem.title}</Text>
+                <TouchableNativeFeedback>
+                  <View style={styles.buybutton}>
+                    <MaterialCommunityIcons
+                      color="white"
+                      size={25}
+                      name="plus"
+                      style={{ marginTop: 0 }}
+                    />
+                  </View>
+                </TouchableNativeFeedback>
+              </View>
+              <Text style={styles.menuItemName}>{menuItem.name}</Text>
+              <Text style={styles.menuItemName}>{menuItem.ingredients}</Text>
+              {menuItem.options && renderMenuItemOptions(menuItem, index)}
+              <Text style={styles.menuItemPrice}>
+                Total: {totalItemPrice.toFixed(2)}
+              </Text>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+};
+
+const ThirdRoute = () => {
+  const [menuItems, setMenuItems] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://nl-app.onrender.com/products/categories/food"
+        );
+        const data = await response.json();
+        setMenuItems(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSelectOption = (menuItemIndex, optionIndex, optionPrice) => {
+    setSelectedOptions((prevSelectedOptions) => {
+      const optionKey = `${menuItemIndex}-${optionIndex}`;
+      const currentOption = prevSelectedOptions[optionKey] || {
+        quantity: 0,
+        price: optionPrice,
+      };
+      return {
+        ...prevSelectedOptions,
+        [optionKey]: {
+          ...currentOption,
+          quantity: currentOption.quantity + 1,
+        },
+      };
+    });
+  };
+
+  const renderMenuItemOptions = (menuItem, menuItemIndex) => {
+    return menuItem.options.map((option, optionIndex) => (
+      <Pressable
+        key={optionIndex}
+        onPress={() =>
+          handleSelectOption(menuItemIndex, optionIndex, option.price)
+        }
+      >
+        <View style={styles.menuItemOption}>
+          <Text style={styles.menuItemOptionName}>{option.name}</Text>
+          <Text style={styles.menuItemOptionPrice}>{option.price}</Text>
+          <Text style={styles.menuItemOptionQuantity}>
+            {selectedOptions[`${menuItemIndex}-${optionIndex}`]
+              ? selectedOptions[`${menuItemIndex}-${optionIndex}`].quantity
+              : 0}
+          </Text>
+        </View>
+      </Pressable>
+    ));
+  };
+
+  return (
+    <View style={{ flex: 1, paddingTop: 0, paddingHorizontal: 0, height: 500 }}>
+      <ScrollView style={styles.menuItems} nestedScrollEnabled={true}>
+        {menuItems.map((menuItem, index) => {
+          const totalItemPrice =
+            (menuItem.price || 0) +
+            Object.keys(selectedOptions).reduce((acc, key) => {
+              if (key.startsWith(`${index}-`)) {
+                acc +=
+                  selectedOptions[key].price * selectedOptions[key].quantity;
+              }
+              return acc;
+            }, 0);
+          return (
+            <View key={index} style={styles.menuItem}>
+              <View style={styles.menuItemGroup}>
+                <Text style={styles.menuItemTitle}>{menuItem.title}</Text>
+                <TouchableNativeFeedback>
+                  <View style={styles.buybutton}>
+                    <MaterialCommunityIcons
+                      color="white"
+                      size={25}
+                      name="plus"
+                      style={{ marginTop: 0 }}
+                    />
+                  </View>
+                </TouchableNativeFeedback>
+              </View>
+              <Text style={styles.menuItemName}>{menuItem.name}</Text>
+              <Text style={styles.menuItemName}>{menuItem.ingredients}</Text>
+              {menuItem.options && renderMenuItemOptions(menuItem, index)}
+              <Text style={styles.menuItemPrice}>
+                Total: {totalItemPrice.toFixed(2)}
+              </Text>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+};
 
 export function TabViewExample() {
   const layout = useWindowDimensions();
@@ -307,12 +430,10 @@ const NieuweBestellingForm = () => {
               style={styles.savebutton}
               onPress={() => setModalVisible(true)}
             >
-              <Text style={styles.buttontext}>Check order</Text>
+              <Text style={styles.buttontext}>Place order</Text>
             </Pressable>
 
             <Modal
-              backdropColor={"green"}
-              backdropOpacity={0.2}
               animationType="fade"
               transparent={true}
               visible={modalVisible}
@@ -375,14 +496,27 @@ const styles = StyleSheet.create({
   },
   select: {
     borderWidth: 1,
-    backgroundColor: "white",
+    borderColor: "#000", // Change border color
+    borderRadius: 10, // Add border radius for rounded corners
+    backgroundColor: "#f0f0f0", // Change background color
     marginBottom: 25,
-    height: 58,
-    lineHeight: 10,
+    height: 50, // Adjust height as needed
+    justifyContent: "center", // Center the picker content
   },
+
+  checkbox: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   selectt: {
     //width: 200,
-    height: 44,
+    height: 65,
     // backgroundColor: "green",
   },
   selectoption: {},
@@ -421,18 +555,52 @@ const styles = StyleSheet.create({
     paddingVertical: 17,
     borderBottomWidth: 1,
     borderBottomColor: "#bababa",
+    backgroundColor: "#f9f9f9", // Example background color for menu items
   },
   menuItemGroup: {
     justifyContent: "space-between",
     flexDirection: "row",
+    alignItems: "center", // Align items in the center vertically
   },
   menuItemTitle: {
-    fontWeight: "500",
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "#333", // Darker text color for the title
+  },
+  menuItemName: {
     fontSize: 14,
+    color: "#666", // Lighter text color for the name
+    marginTop: 5, // Add some space between the title and name
   },
   menuItemPrice: {
     color: "#e27b00",
-    marginTop: -10,
+    marginTop: 5, // Add some space between the options and price
+    fontWeight: "bold", // Make the price bold
+    fontSize: 16, // Increase font size for the price
+  },
+
+  menuItemOption: {
+    flexDirection: "row",
+    alignItems: "center", // Align items in the center vertically
+    justifyContent: "space-between",
+    marginTop: 5, // Add some space between each option
+    paddingVertical: 5, // Add padding inside the option container
+    paddingHorizontal: 10, // Add padding inside the option container
+    backgroundColor: "#fff", // Background color for option items
+    borderRadius: 5, // Rounded corners for option items
+    borderWidth: 1,
+    borderColor: "#ddd", // Border color for option items
+  },
+
+  menuItemOptionName: {
+    fontSize: 14,
+    color: "#555", // Text color for option name
+  },
+
+  menuItemOptionPrice: {
+    fontSize: 14,
+    color: "#555", // Text color for option price
+    fontWeight: "bold", // Make the option price bold
   },
   buybutton: {
     //borderWidth: 1,
@@ -484,5 +652,11 @@ const styles = StyleSheet.create({
   backbutton: { flexDirection: "row", marginBottom: 50 },
   backbuttontext: {
     fontSize: 15,
+  },
+  menuItemOptionQuantity: {
+    fontSize: 14,
+    color: "#555", // Text color for option quantity
+    fontWeight: "bold", // Make the option quantity bold
+    marginLeft: 10, // Add some space between the price and quantity
   },
 });
