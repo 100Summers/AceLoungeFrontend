@@ -311,6 +311,8 @@ const NieuweBestellingForm = () => {
             </Pressable>
 
             <Modal
+              backdropColor={"green"}
+              backdropOpacity={0.2}
               animationType="fade"
               transparent={true}
               visible={modalVisible}
