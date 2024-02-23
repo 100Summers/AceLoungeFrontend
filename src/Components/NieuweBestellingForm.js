@@ -99,7 +99,12 @@ const FirstRoute = () => {
         >
           <View style={styles.checkbox}>
             {isSelected && (
-              <MaterialCommunityIcons name="check" size={20} color="black" />
+              <MaterialCommunityIcons
+                style={{ position: "relative", left: -1, bottom: 1 }}
+                name="check"
+                size={18}
+                color="black"
+              />
             )}
           </View>
           <Text style={styles.menuItemOptionName}>{option.name}</Text>
@@ -125,7 +130,13 @@ const FirstRoute = () => {
           return (
             <View key={index} style={styles.menuItem}>
               <View style={styles.menuItemGroup}>
-                <Text style={styles.menuItemTitle}>{menuItem.title}</Text>
+                <View style={styles.menuItemTitleHeader}>
+                  <Text style={styles.menuItemTitle}>{menuItem.title}</Text>
+                  <Text style={styles.menuItemName}>{menuItem.name}</Text>
+                  <Text style={styles.menuItemIngredients}>
+                    {menuItem.ingredients} opi oi po ipo ipo i
+                  </Text>
+                </View>
                 <TouchableNativeFeedback>
                   <View style={styles.buybutton}>
                     <MaterialCommunityIcons
@@ -137,8 +148,7 @@ const FirstRoute = () => {
                   </View>
                 </TouchableNativeFeedback>
               </View>
-              <Text style={styles.menuItemName}>{menuItem.name}</Text>
-              <Text style={styles.menuItemName}>{menuItem.ingredients}</Text>
+
               {menuItem.options && renderMenuItemOptions(menuItem, index)}
               <Text style={styles.menuItemPrice}>
                 Total: {totalItemPrice.toFixed(2)}
@@ -238,7 +248,9 @@ const SecondRoute = () => {
                 </TouchableNativeFeedback>
               </View>
               <Text style={styles.menuItemName}>{menuItem.name}</Text>
-              <Text style={styles.menuItemName}>{menuItem.ingredients}</Text>
+              <Text style={styles.menuItemIngredients}>
+                {menuItem.ingredients}
+              </Text>
               {menuItem.options && renderMenuItemOptions(menuItem, index)}
               <Text style={styles.menuItemPrice}>
                 Total: {totalItemPrice.toFixed(2)}
@@ -338,7 +350,9 @@ const ThirdRoute = () => {
                 </TouchableNativeFeedback>
               </View>
               <Text style={styles.menuItemName}>{menuItem.name}</Text>
-              <Text style={styles.menuItemName}>{menuItem.ingredients}</Text>
+              <Text style={styles.menuItemIngredients}>
+                {menuItem.ingredients}
+              </Text>
               {menuItem.options && renderMenuItemOptions(menuItem, index)}
               <Text style={styles.menuItemPrice}>
                 Total: {totalItemPrice.toFixed(2)}
@@ -498,15 +512,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#000", // Change border color
     borderRadius: 10, // Add border radius for rounded corners
-    backgroundColor: "#f0f0f0", // Change background color
+    backgroundColor: "white", // Change background color
     marginBottom: 25,
     height: 50, // Adjust height as needed
     justifyContent: "center", // Center the picker content
   },
 
   checkbox: {
-    width: 20,
-    height: 20,
+    width: 18,
+    height: 18,
     marginRight: 10,
     borderWidth: 1,
     borderColor: "#000",
@@ -552,7 +566,7 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: "column",
     paddingHorizontal: 15,
-    paddingVertical: 17,
+    paddingVertical: 25,
     borderBottomWidth: 1,
     borderBottomColor: "#bababa",
     backgroundColor: "#f9f9f9", // Example background color for menu items
@@ -564,13 +578,14 @@ const styles = StyleSheet.create({
   },
   menuItemTitle: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 0,
     color: "#333", // Darker text color for the title
   },
-  menuItemName: {
+  menuItemIngredients: {
     fontSize: 14,
-    color: "#666", // Lighter text color for the name
+    color: "#999", // Lighter text color for the name
     marginTop: 5, // Add some space between the title and name
+    width: 280,
   },
   menuItemPrice: {
     color: "#e27b00",
@@ -578,23 +593,30 @@ const styles = StyleSheet.create({
     fontWeight: "bold", // Make the price bold
     fontSize: 16, // Increase font size for the price
   },
+  menuItemName: {
+    color: "black",
+    fontWeight: "600",
+    fontSize: 16,
+  },
 
   menuItemOption: {
     flexDirection: "row",
     alignItems: "center", // Align items in the center vertically
     justifyContent: "space-between",
     marginTop: 5, // Add some space between each option
+    marginBottom: 4,
     paddingVertical: 5, // Add padding inside the option container
-    paddingHorizontal: 10, // Add padding inside the option container
-    backgroundColor: "#fff", // Background color for option items
-    borderRadius: 5, // Rounded corners for option items
-    borderWidth: 1,
-    borderColor: "#ddd", // Border color for option items
+    paddingHorizontal: 0, // Add padding inside the option container
+    // backgroundColor: "#fff", // Background color for option items
+    // borderRadius: 5, // Rounded corners for option items
+    // borderWidth: 1,
+    // borderColor: "#ddd", // Border color for option items
   },
 
   menuItemOptionName: {
     fontSize: 14,
     color: "#555", // Text color for option name
+    flex: 1,
   },
 
   menuItemOptionPrice: {
@@ -607,7 +629,7 @@ const styles = StyleSheet.create({
     borderColor: "grey",
     padding: 10,
     position: "relative",
-    top: 5,
+    top: 0,
     borderRadius: 3,
     backgroundColor: "#e27b00",
   },
