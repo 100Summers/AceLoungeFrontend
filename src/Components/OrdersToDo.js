@@ -1,17 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   FlatList,
   StyleSheet,
   Text,
   View,
-  TouchableWithoutFeedback,
   Animated,
-} from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+  TouchableOpacity,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const AccordionItem = ({ item, index, details }) => {
+const AccordionItem = ({ item }) => {
   const [isOpened, setIsOpened] = useState(false);
+  const navigation = useNavigation();
   const animation = useState(new Animated.Value(0))[0];
+  const orderTime = new Date(item.orderDate).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  const navigateToBestellingen = () => {
+    // Navigate to the Bestellingen screen with the orderId as a parameter
+    navigation.navigate('Bestellingen', { orderId: item._id });
+  };
 
   const toggleAccordion = () => {
     setIsOpened(!isOpened);
@@ -19,147 +29,149 @@ const AccordionItem = ({ item, index, details }) => {
 
   const heightAnimationInterpolation = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 270],
+    outputRange: [0, 270], // Adjust this value to fit the content
   });
+
 
   useEffect(() => {
     Animated.timing(animation, {
       toValue: isOpened ? 1 : 0,
-      duration: 100,
+      duration: 300,
       useNativeDriver: false,
     }).start();
   }, [isOpened]);
-
   return (
-    <View>
-      <TouchableWithoutFeedback onPress={toggleAccordion} style={styles.acco}>
+    <TouchableOpacity onPress={navigateToBestellingen}>
+      <View style={styles.accordionContainer}>
         <View style={styles.header}>
-          <Text style={styles.title}>Tafel: {item.table}</Text>
-          <Text style={styles.orderdate}>Geplaatst: 13-2 om 13:30u</Text>
-          <MaterialIcons
-            color="gray"
-            size={22}
-            name={isOpened ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-            style={{ marginTop: 0 }}
-          />
+          <Text style={styles.title}>Tafel {item.table}</Text>
+          <View style={styles.dateContainer}>
+            <Text style={styles.orderdate}>Geplaatst: {orderTime}</Text>
+          </View>
         </View>
-      </TouchableWithoutFeedback>
-      <Animated.View
-        style={[styles.content, { height: heightAnimationInterpolation }]}
-      >
-        <View style={{ flex: 1, flexDirection: "column" }}>
-          <Text style={styles.orderdetails}>
-            Tafel:
-            <Text style={styles.orderdetailstxt}> {item.table}</Text>
-          </Text>
-          <Text style={styles.orderdetails}>
-            Totaalbedrag:{" "}
-            <Text style={styles.orderdetailstxt}>€{item.total}</Text>
-          </Text>
-          <Text style={styles.orderdetails}>
-            Producten:{" "}
-            <Text style={styles.orderdetailstxt}>{item.products}</Text>
-          </Text>
-          <Text style={styles.orderdetails}>
-            Notitie: <Text style={styles.orderdetailstxt}>{item.notes}</Text>
-          </Text>
-          <Text style={styles.orderdetails}>
-            Betalen:{" "}
-            <Text style={styles.orderdetailstxt}>{item.paymentmethod}</Text>
-          </Text>
-          <Text style={styles.orderdetails}>
-            Betaald? <Text style={styles.orderdetailstxt}>{item.paid}</Text>
-          </Text>
-        </View>
-      </Animated.View>
-    </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 const OrdersToDo = () => {
+  const [orders, setOrders] = useState([]);
+  const [badgeNumber, setBadgeNumber] = useState(0);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch('https://nl-app.onrender.com/orders');
+      const data = await response.json();
+      const todaysOrders = data.filter(order => {
+        const orderDate = new Date(order.orderDate);
+        orderDate.setHours(0, 0, 0, 0);
+        return orderDate.getTime() === new Date().setHours(0, 0, 0, 0);
+      });
+      setOrders(todaysOrders);
+      setBadgeNumber(todaysOrders.length);
+    } catch (error) {
+      console.error('Failed to fetch orders:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+    const intervalId = setInterval(fetchOrders, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []);
   return (
+    // The main container for the OrdersToDo component, styled with styles.container.
     <View style={styles.container}>
-      <FlatList
-        data={[
-          {
-            table: "1",
-            total: "99.22",
-            products:
-              "1x Loempia // 2x Cola // 1x Loempia // 1x Loempia // 1x Loempia // 1x Loempia",
-            paymentmethod: "Contant",
-            paid: "Nee",
-            notes: "extra peper",
-          },
-          {
-            table: "2",
-            total: "11.22",
-            products:
-              "9x Loempia // 2x Cola // 1x Loempia // 1x Nasi // 1x Loempia // 97x Bara met kip // 39x Ajam pangang",
-            paymentmethod: "Contant",
-            paid: "Nee",
-            notes: "extra peper",
-          },
-          { table: "3" },
-          { table: "4" },
-          { table: "5" },
-          { table: "6" },
-        ]}
-        renderItem={({ item, index }) => (
-          <AccordionItem item={item} index={index} />
-        )}
-        keyExtractor={(item) => item.table}
-      />
+    
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    
+        <View style={styles.badgenumber}>
+          <Text style={styles.badgenumbertext}>{badgeNumber}</Text>
+        </View>
+      
+        <Text style={styles.contentheader}>Open bestellingen:</Text>
+      </View>
+      <View style={styles.fixedSizeContainer}>
+        <FlatList
+          // Array of orders to be rendered.
+          data={orders}
+          // Function to render each item using the AccordionItem component.
+          renderItem={({ item }) => <AccordionItem item={item} />}
+          // Function to extract a unique key for each item.
+          keyExtractor={(item) => item._id}
+          // Prop to hide the vertical scroll indicator.
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
+  fixedSizeContainer: {
+    height: 300, // Set a fixed height for the FlatList container
+    width: '100%', // Set the width to take up 100% of the parent container
+  },
   container: {
-    flex: 0,
-    paddingTop: 22,
+    container: {
+      flex: 1, // The container will fill the entire screen.
+      justifyContent: 'center', // Centers content vertically in the container.
+      alignItems: 'center', // Centers content horizontally in the container.
+    },
   },
   acco: {},
-  item: {
-    padding: 10,
-    fontSize: 13,
-    height: 44,
-    backgroundColor: "white",
-    marginBottom: 10,
-    lineHeight: 22,
-    borderRadius: 3,
-    borderWidth: 1,
-    borderColor: "#e27b00",
-  },
   header: {
-    backgroundColor: "white",
-    padding: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderRadius: 3,
-    borderWidth: 1,
-    borderColor: "#e27b00",
+    width: 250, // Set a fixed width for each item
+    height: 100, // Set a fixed height for each item (optional, depending on your design)
+    marginTop: 20,
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: "#000",
+    alignSelf: "center",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-
-  content: {
-    marginTop: 8,
-    overflow: "hidden",
+  badgenumber: {
+    backgroundColor: "#e27b00",
+    width: 23,
+    height: 23,
+    justifyContent: 'center', // Center the text vertically
+    borderRadius: 40,
   },
-  orderdetails: {
-    //flex: 1,
-    fontWeight: "600",
-    marginBottom: 10,
-  },
-  orderdetailstxt: {
-    fontWeight: "300",
-  },
-  orderdate: {
-    fontStyle: "italic",
+  badgenumbertext: {
+    color: "white",
     fontSize: 13,
-    marginRight: 8,
+    textAlign: "center",
+    fontWeight: "600",
+  },
+  contentheader: {
+    fontWeight: "bold",
+    color: "black",
+    fontSize: 14,
+    marginLeft: 5,
   },
   title: {
-    marginRight: "auto",
+    fontSize:32,
+    fontWeight: "bold",
+    textAlign: "center",
+    flex: 0, // Take up all available space
   },
+  orderdate: {
+    // ... existing styles for orderdate ...
+    textAlign: 'center',
+    fontSize:16 // Center the text within the Text component
+  },
+  dateContainer: {
+    // This container will ensure the date is centered
+    flex: 0.5, // Take up all available space
+    justifyContent: 'center', // Center content horizontally in the container
+    alignItems: 'center', // Center content vertically in the container
+  },
+
+  // Add additional styles for the horizontal layout if necessary
 });
 
 export default OrdersToDo;

@@ -1,98 +1,187 @@
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  FlatList, 
-  TouchableOpacity, 
-  TouchableNativeFeedback  
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Alert
 } from "react-native";
-import { FAB } from 'react-native-paper'; // Import FAB
+import { FAB } from 'react-native-paper';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+import { useUser } from '../contexts/UserContext'; // Import useUser hook
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+const ReservationItem = ({ item, onEdit, onDelete, canEdit }) => {
+  // Function to format the date and time
+  const formatDateTime = (dateTimeString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateTimeString).toLocaleDateString('en-US', options);
+  };
 
-const reservations = [ 
-  { id: '1', name: 'John Doe', date: '2024-02-21', time: '18:00' },
-  { id: '2', name: 'Jane Smith', date: '2024-02-22', time: '12:30' },
-  // ...more reservations
-];
-
-const ReservationItem = ({ item, onEdit, onDelete }) => {
   return (
     <View style={styles.reservationItem}>
-      <Text style={styles.reservationText}>
-        {item.name} - {item.date} {item.time}
-      </Text>
-      <View style={styles.buttonGroup}>
-        <TouchableOpacity onPress={() => onEdit(item)}>
-          <Text style={styles.editButton}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => onDelete(item.id)}>
-          <Text style={styles.deleteButton}>Delete</Text>
-        </TouchableOpacity>
+      <View style={styles.reservationInfo}>
+        <Text style={styles.reservationText}>
+          {item.name} - {formatDateTime(item.dateTime)} - {item.numGuests} guests
+        </Text>
+        {/* Display phone number if it exists */}
+        {item.phone ? (
+          <Text style={styles.reservationPhone}>{item.phone}</Text>
+        ) : null}
+        {/* Display notes if they exist */}
+        {item.notes ? (
+          <Text style={styles.reservationNotes}>{item.notes}</Text>
+        ) : null}
       </View>
+      {canEdit && (
+        <View style={styles.buttonGroup}>
+          <TouchableOpacity onPress={() => onEdit(item)} style={styles.editButton}>
+            <MaterialCommunityIcons name="pencil" size={20} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => onDelete(item._id)} style={styles.deleteButton}>
+            <MaterialCommunityIcons name="delete" size={20} color="white" />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
-  ); 
+  );
 };
 
 const NieuweReservering = () => {
+  const [reservations, setReservations] = useState([]);
+  const navigation = useNavigation();
+  const { user } = useUser(); // Use the useUser hook to access the user object
+
+  const handleEdit = (item) => {
+    navigation.navigate('EditReservation', { reservation: item });
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://nl-app.onrender.com/reservations/${id}`);
+      setReservations(reservations.filter((reservation) => reservation._id !== id));
+      Alert.alert('Success', 'Reservation deleted successfully');
+    } catch (error) {
+      Alert.alert('Error', 'Could not delete the reservation');
+    }
+  };
+
+  const fetchReservations = async () => {
+    try {
+      const response = await axios.get('http://nl-app.onrender.com/reservations');
+      setReservations(response.data);
+    } catch (error) {
+      Alert.alert('Error', 'Could not fetch reservations');
+    }
+  };
+
+  useEffect(() => {
+    fetchReservations();
+
+    // Add a focus listener
+    const unsubscribe = navigation.addListener('focus', fetchReservations);
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
+
+  // Determine if the user can edit or delete reservations
+  const canEdit = user && user.role === 'manager';
+
   return (
     <View style={styles.container}>
       <FlatList
         data={reservations}
         renderItem={({ item }) => (
-          <ReservationItem item={item} onEdit={() => alert('Edit')} onDelete={() => alert('Delete')} />
+          <ReservationItem
+            item={item}
+            onEdit={() => handleEdit(item)}
+            onDelete={() => handleDelete(item._id)}
+            canEdit={canEdit}
+          />
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id.toString()}
       />
 
-      <FAB 
-        style={styles.fab}
-        icon="plus"
-        onPress={() => alert('Add Reservation')} // Replace with your add action
-      /> 
+      {canEdit && (
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={() => navigation.navigate('AddReservation')}
+        />
+      )}
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: "#e0d5d6", // Changed to match Bestellingen.js
+    padding: 20, // Existing padding from NieuweReservering.js
   },
   reservationItem: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 15,
-    marginBottom: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10, // Rounded corners like orderItem in Bestellingen.js
+    marginBottom: 10, // Spacing between items like orderItem in Bestellingen.js
+    padding: 15, // Padding like orderItem in Bestellingen.js
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    shadowColor: "#000", // Shadow like orderItem in Bestellingen.js
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Elevation like orderItem in Bestellingen.js
+  },
+  reservationInfo: {
+    flex: 1,
+    marginRight: 10, // Keep existing marginRight
   },
   reservationText: {
-    fontSize: 16,
+    fontSize: 18,
+    color: '#333',
+    fontWeight: "bold", // Bold like orderId in Bestellingen.js
+  },
+  reservationNotes: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
   },
   buttonGroup: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   editButton: {
-    color: 'blue',
+    padding: 10,
+    backgroundColor: "#e27b00",
+    borderRadius: 5, // Increased rounded corners
+    color: '#fff',
+    fontWeight: '500',
     marginRight: 10,
   },
   deleteButton: {
-    color: 'red',
+    padding: 10,
+    backgroundColor: "#dc3545",
+    borderRadius: 10, // Increased rounded corners
+    color: '#fff',
+    fontWeight: '500',
   },
-  // No changes needed for addButton styles 
-  addButton: {
-    backgroundColor: '#f0f0f0', 
-    padding: 15,
-    borderRadius: 5,
-  },
-  addButtonText: {
-    textAlign: 'center',
+  reservationPhone: {
+    fontSize: 16,
+    color: '#333',
+    marginTop: 4,
   },
   fab: {
     position: 'absolute',
-    bottom: 20, 
-    right: 20, 
-    backgroundColor: '#e27b00',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#e27b00', // Keep existing FAB background color
+  },
+  buttonText: {
+    color: '#fff', // Set text color to white
+    fontWeight: '500',
   },
 });
 
