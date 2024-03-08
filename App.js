@@ -6,6 +6,7 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useTheme } from "react-native-paper";
 import Nieuwproduct from "./src/Components/Nieuwproduct";
+import Nieuwproduct from "./src/Components/Nieuwproduct";
 // Import UserProvider from the context file
 import { UserProvider } from "./src/contexts/UserContext";
 // Import screens and components
