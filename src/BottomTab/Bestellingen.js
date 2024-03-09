@@ -156,9 +156,8 @@ const Bestellingen = ({ navigation }) => {
                 <View style={styles.orderItem}>
                   <View style={styles.centerSingleItem}>
                     <Text style={styles.orderId}>Tafel {item.table}</Text>
-                  </View>
-                  <View style={styles.spaceBetweenRow}>
-                    <Text style={styles.orderDetail}>
+
+                    <Text style={[styles.orderDetail, { fontSize: 18 }]}>
                       {new Date(item.orderDate).toDateString() ===
                       new Date().toDateString()
                         ? new Date(item.orderDate).toLocaleTimeString([], {
@@ -172,13 +171,20 @@ const Bestellingen = ({ navigation }) => {
                             day: "2-digit",
                           })}
                     </Text>
+                  </View>
+                  <View style={styles.spaceBetweenRow}>
+                    <Text>&nbsp;</Text>
                     <Text
                       style={{
                         fontSize: 14,
                         marginBottom: 5,
                         fontWeight: "bold",
                         color:
-                          item.status === "unprocessed" ? "red" : "#4a9c3a",
+                          item.status === "unprocessed"
+                            ? "red"
+                            : item.status === "processed"
+                            ? "orange"
+                            : "#4a9c3a",
                       }}
                     >
                       {item.status === "unprocessed"
@@ -220,9 +226,29 @@ const Bestellingen = ({ navigation }) => {
                       </View>
                     ))}
                   </View>
+
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      backgroundColor: "#eee",
+                      padding: 8,
+                      marginBottom: 5,
+                    }}
+                  >
+                    <Text style={{ fontSize: 14, fontWeight: 600 }}>
+                      Totaal:
+                    </Text>
+                    <View>
+                      <Text style={styles.price}>
+                        €{item.totalPrice.toFixed(2)}
+                      </Text>
+                    </View>
+                  </View>
+
                   {item.notes && (
                     <View style={styles.notes}>
-                      <Text>Notes:</Text>
+                      <Text>Notities:</Text>
                       <Text>{item.notes}</Text>
                     </View>
                   )}
@@ -233,7 +259,7 @@ const Bestellingen = ({ navigation }) => {
                           style={styles.editButton}
                           onPress={() => handleEditOrder(item._id)}
                         >
-                          <Icon name="edit" size={20} color="white" />
+                          <Icon name="edit" size={18} color="white" />
                           <Text style={{ color: "white", marginLeft: 5 }}>
                             Bewerken
                           </Text>
@@ -247,7 +273,7 @@ const Bestellingen = ({ navigation }) => {
                             showStatusOptions(item._id, item.status)
                           }
                         >
-                          <Icon name="arrow-right" size={20} color="#fff" />
+                          <Icon name="arrow-right" size={18} color="#fff" />
                           <Text style={{ color: "white", marginLeft: 5 }}>
                             {item.status === "unprocessed"
                               ? "Afhandelen"
@@ -255,18 +281,16 @@ const Bestellingen = ({ navigation }) => {
                           </Text>
                         </TouchableOpacity>
                       )}
-                      {item.status !== "paid" && (
-                        <TouchableOpacity
-                          style={styles.deleteButton}
-                          onPress={() => handleDeleteOrder(item._id)}
-                        >
-                          <Icon name="trash" size={20} color="white" />
-                        </TouchableOpacity>
-                      )}
+                      {item.status !== "paid" &&
+                        item.status !== "processed" && (
+                          <TouchableOpacity
+                            style={styles.deleteButton}
+                            onPress={() => handleDeleteOrder(item._id)}
+                          >
+                            <Icon name="trash" size={18} color="white" />
+                          </TouchableOpacity>
+                        )}
                     </View>
-                    <Text style={styles.price}>
-                      €{item.totalPrice.toFixed(2)}
-                    </Text>
                   </View>
                 </View>
               )}
@@ -351,13 +375,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   price: {
-    fontSize: 24,
+    fontSize: 14,
     fontWeight: "bold",
   },
   centerSingleItem: {
     width: "100%",
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
   },
   productCards: {
     marginTop: 10,
@@ -367,10 +392,6 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#dc3545",
     borderRadius: 5,
-    alignSelf: "flex-start",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
   },
   buttonGroup: {
     flexDirection: "row",

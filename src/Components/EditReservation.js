@@ -96,7 +96,7 @@ const EditReservation = ({ route, navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.screendescription}>
-        Voeg hier een nieuw product toe aan het menu.
+        Bewerk hier een bestaande reservering.
       </Text>
       <View style={styles.inputContainer}>
         <Text style={styles.formlabel}>Naam:</Text>

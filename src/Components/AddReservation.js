@@ -50,7 +50,7 @@ const AddReservation = ({ navigation }) => {
 
   const handleSubmit = async () => {
     if (!name || !time || !numGuests) {
-      Alert.alert("Error", "Please fill in all fields");
+      Alert.alert("Fout", "Vul alle velden in.");
       return;
     }
 
