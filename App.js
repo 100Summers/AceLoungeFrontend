@@ -6,7 +6,6 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useTheme } from "react-native-paper";
 import Nieuwproduct from "./src/Components/Nieuwproduct";
-import Nieuwproduct from "./src/Components/Nieuwproduct";
 // Import UserProvider from the context file
 import { UserProvider } from "./src/contexts/UserContext";
 // Import screens and components
@@ -119,7 +118,18 @@ function RootStackNavigator() {
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>
       <RootStack.Screen name="Login" component={Login} />
-      <RootStack.Screen name="Signup" component={Signup} />
+      <RootStack.Screen
+        name="Signup"
+        component={Signup}
+        options={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#311213",
+          },
+          headerTintColor: "#e27b00",
+          headerTitle: "Nieuwe medewerker",
+        }}
+      />
       <RootStack.Screen name="Main" component={TabNavigator} />
     </RootStack.Navigator>
   );
@@ -154,6 +164,7 @@ function StackNavigator() {
             backgroundColor: "#311213",
           },
           headerTintColor: "#e27b00",
+          headerTitle: "Alle reserveringen",
         }}
       />
 
@@ -166,6 +177,7 @@ function StackNavigator() {
             backgroundColor: "#311213",
           },
           headerTintColor: "#e27b00",
+          headerTitle: "Nieuwe reservering",
         }}
       />
 
@@ -178,6 +190,7 @@ function StackNavigator() {
             backgroundColor: "#311213",
           },
           headerTintColor: "#e27b00",
+          headerTitle: "Reservering bewerken",
         }}
       />
       <Stack.Screen
