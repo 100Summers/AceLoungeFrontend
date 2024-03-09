@@ -172,12 +172,20 @@ const Bestellingen = ({ navigation }) => {
                             day: "2-digit",
                           })}
                     </Text>
-                    <Text style={styles.orderDetail}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginBottom: 5,
+                        fontWeight: "bold",
+                        color:
+                          item.status === "unprocessed" ? "red" : "#4a9c3a",
+                      }}
+                    >
                       {item.status === "unprocessed"
                         ? "NIET AFGEHANDELD"
                         : item.status === "processed"
                         ? "AFGEHANDELD"
-                        : "BETLAAD"}
+                        : "BETAALD"}
                     </Text>
                   </View>
                   <View style={styles.productCards}>
@@ -226,20 +234,35 @@ const Bestellingen = ({ navigation }) => {
                           onPress={() => handleEditOrder(item._id)}
                         >
                           <Icon name="edit" size={20} color="white" />
+                          <Text style={{ color: "white", marginLeft: 5 }}>
+                            Bewerken
+                          </Text>
                         </TouchableOpacity>
                       )}
-                      <TouchableOpacity
-                        style={styles.statusButton}
-                        onPress={() => showStatusOptions(item._id, item.status)}
-                      >
-                        <Icon name="arrow-right" size={20} color="#000" />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.deleteButton}
-                        onPress={() => handleDeleteOrder(item._id)}
-                      >
-                        <Icon name="trash" size={20} color="white" />
-                      </TouchableOpacity>
+
+                      {item.status !== "paid" && (
+                        <TouchableOpacity
+                          style={styles.statusButton}
+                          onPress={() =>
+                            showStatusOptions(item._id, item.status)
+                          }
+                        >
+                          <Icon name="arrow-right" size={20} color="#fff" />
+                          <Text style={{ color: "white", marginLeft: 5 }}>
+                            {item.status === "unprocessed"
+                              ? "Afhandelen"
+                              : "Betaald"}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                      {item.status !== "paid" && (
+                        <TouchableOpacity
+                          style={styles.deleteButton}
+                          onPress={() => handleDeleteOrder(item._id)}
+                        >
+                          <Icon name="trash" size={20} color="white" />
+                        </TouchableOpacity>
+                      )}
                     </View>
                     <Text style={styles.price}>
                       €{item.totalPrice.toFixed(2)}
@@ -314,7 +337,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#e27b00",
     borderRadius: 5,
-    marginRight: 10,
+    marginRight: 5,
     alignSelf: "flex-start", // Align button to the start of the flex container
     flexDirection: "row", // Align icon and text in a row
     alignItems: "center", // Center items vertically
@@ -354,11 +377,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   editButton: {
-    width: 40,
+    width: "auto",
     padding: 10,
     backgroundColor: "#007bff", // You can choose a different color
     borderRadius: 5,
-    marginRight: 10,
+    marginRight: 5,
     alignSelf: "flex-start",
     flexDirection: "row",
     justifyContent: "center",

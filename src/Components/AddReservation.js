@@ -160,7 +160,7 @@ const AddReservation = ({ navigation }) => {
       </View>
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Reservering aanmaken</Text>
+        <Text style={styles.buttonText}>Reservering toevoegen</Text>
       </TouchableOpacity>
     </ScrollView>
   );

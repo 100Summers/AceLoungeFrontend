@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
   },
   orderSummary: {
     backgroundColor: "white",
-    padding: 15,
+    padding: 20,
     marginVertical: 0,
   },
   page: {
