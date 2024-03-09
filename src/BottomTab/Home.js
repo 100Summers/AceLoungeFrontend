@@ -70,7 +70,12 @@ const Home = () => {
         <OrdersToDo />
 
         <View
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 40 }}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 40,
+            marginBottom: 10,
+          }}
         >
           <View style={styles.badgenumber}>
             <Text style={styles.badgenumbertext}>{reservations.length}</Text>
@@ -96,7 +101,8 @@ const Home = () => {
                 {new Date(reservation.dateTime).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
-                })}
+                })}{" "}
+                uur
               </Text>
               {selectedReservationId === reservation._id && (
                 <View style={styles.dropdown}>
@@ -156,6 +162,12 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 10,
     marginBottom: 10,
+    shadowColor: "#000",
+    alignSelf: "center",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   // ... other styles you may have
 });
