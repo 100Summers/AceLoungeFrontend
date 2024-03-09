@@ -164,8 +164,9 @@ const Bestellingen = ({ navigation }) => {
                       })}
                 </Text>
                 <Text style={styles.orderDetail}>
-                  {item.status.toUpperCase()}
-                </Text>
+  {item.status === "unprocessed" ? "NIET AFGEHANDELD" : "AFGEHANDELD"}
+</Text>
+
               </View>
               <View style={styles.productCards}>
                 {item.products.map((product, index) => (
