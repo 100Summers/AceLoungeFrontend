@@ -27,6 +27,10 @@ export const orderSlice = createSlice({
 				state.items.splice(index, 1);
 				state.price -= action.payload.price;
 			}
+			
+			if (state.price < 0) {
+				state.price = 0;
+			}
 		},
 		emptyOrder: (state) => {
 			state.items = [];
