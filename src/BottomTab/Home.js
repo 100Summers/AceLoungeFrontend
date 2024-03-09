@@ -101,8 +101,8 @@ const Home = () => {
                 {new Date(reservation.dateTime).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
-                })}{" "}
-                uur
+                  hour12: false, // Add this option to use 24-hour format
+                })}
               </Text>
               {selectedReservationId === reservation._id && (
                 <View style={styles.dropdown}>

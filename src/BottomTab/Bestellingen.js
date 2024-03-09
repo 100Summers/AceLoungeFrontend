@@ -164,6 +164,7 @@ const Bestellingen = ({ navigation }) => {
                         ? new Date(item.orderDate).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
+                            hour12: false, // Add this option to use 24-hour format
                           })
                         : new Date(item.orderDate).toLocaleDateString("nl", {
                             year: "numeric",
@@ -171,18 +172,12 @@ const Bestellingen = ({ navigation }) => {
                             day: "2-digit",
                           })}
                     </Text>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        marginBottom: 5,
-                        fontWeight: "bold",
-                        color:
-                          item.status === "unprocessed" ? "red" : "#73bf5c",
-                      }}
-                    >
+                    <Text style={styles.orderDetail}>
                       {item.status === "unprocessed"
                         ? "NIET AFGEHANDELD"
-                        : "AFGEHANDELD"}
+                        : item.status === "processed"
+                        ? "AFGEHANDELD"
+                        : "BETLAAD"}
                     </Text>
                   </View>
                   <View style={styles.productCards}>
@@ -230,7 +225,7 @@ const Bestellingen = ({ navigation }) => {
                           style={styles.editButton}
                           onPress={() => handleEditOrder(item._id)}
                         >
-                          <Text>Bewerken</Text>
+                          <Icon name="edit" size={20} color="white" />
                         </TouchableOpacity>
                       )}
                       <TouchableOpacity
