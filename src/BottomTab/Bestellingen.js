@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   FlatList,
+  ScrollView,
   TouchableOpacity,
   Alert,
 } from "react-native";
@@ -93,12 +94,12 @@ const Bestellingen = ({ navigation }) => {
       if (response.status === 200) {
         // Call fetchOrders to refresh the list after deletion
         fetchOrders();
-        Alert.alert("Success", "Order deleted successfully");
+        Alert.alert("Voltooid", "Bestelling verwijderd.");
       } else {
-        throw new Error("Failed to delete order");
+        throw new Error("Bestelling verwijderen mislukt.");
       }
     } catch (error) {
-      Alert.alert("Error", error.message || "Failed to delete order");
+      Alert.alert("Fout", error.message || "Bestelling verwijderen mislukt.");
     }
   };
 
@@ -110,17 +111,17 @@ const Bestellingen = ({ navigation }) => {
         // Call fetchOrders to refresh the list after status change
         fetchOrders();
       } else {
-        throw new Error("Failed to update order status");
+        throw new Error("Status bijwerken mislukt.");
       }
     } catch (error) {
-      console.error("Error updating order status:", error);
+      console.error("Fout tijdens bijwerken status:", error);
     }
   };
 
   const showStatusOptions = (orderId, currentStatus) => {
     let newStatus = currentStatus === "unprocessed" ? "processed" : "paid";
     Alert.alert(
-      "Change Order Status",
+      "Bestelling status aanpassen",
       `Bestelling markeren als ${newStatus}?`,
       [
         { text: "Annuleren", style: "cancel" },
@@ -135,112 +136,147 @@ const Bestellingen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <Header name="Bestellingen" />
-      </SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={styles.safeArea}>
+          <Header name="Bestellingen" />
+        </SafeAreaView>
 
-      <View style={styles.mainContent}>
-        <FlatList
-          ref={flatListRef}
-          data={orders}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <View style={styles.orderItem}>
-              <View style={styles.centerSingleItem}>
-                <Text style={styles.orderId}>Tafel {item.table}</Text>
-              </View>
-              <View style={styles.spaceBetweenRow}>
-              <Text style={styles.orderDetail}>
-  {new Date(item.orderDate).toDateString() === new Date().toDateString()
-    ? new Date(item.orderDate).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false, // Add this option to use 24-hour format
-      })
-    : new Date(item.orderDate).toLocaleDateString("nl", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      })}
-</Text>
-                <Text style={styles.orderDetail}>
-                  {item.status === "unprocessed"
-                    ? "NIET AFGEHANDELD"
-                    : item.status === "processed"
-                      ? "AFGEHANDELD"
-                      : "BETLAAD"}
-                </Text>
-              </View>
-              <View style={styles.productCards}>
-                {item.products.map((product, index) => (
-                  <View key={index} style={styles.productItem}>
-                    <View style={styles.spaceBetweenRow}>
-                      <Text style={styles.productDetail}>
-                        {index + 1}. {product.name}
-                      </Text>
-                      <Text style={styles.productDetail}>
-                        €{product.price.toFixed(2)}
-                      </Text>
-                    </View>
-                    {product.selectedOptions.map((option, index) => (
-                      <View
-                        key={index}
-                        style={[styles.spaceBetweenRow, styles.option]}
-                      >
-                        <Text style={styles.optionText}>+ {option.name}</Text>
-                        <Text style={styles.optionText}>
-                          €{option.price.toFixed(2)}
-                        </Text>
-                      </View>
-                    ))}
-                    {/* <Text style={styles.productDetail}>
+        <View style={styles.mainContent}>
+          <Text style={styles.screendescription}>
+            Bekijk hier alle geplaatste bestellingen. "Niet afgehandeld" moet
+            nog verwerkt worden. Nadat bestelling is afgehandeld: druk op
+            'Afhandelen'. Nadat bestelling is betaald: druk op 'Betaald'.
+          </Text>
+          <View contentContainerStyle={{ flex: 1 }}>
+            <FlatList
+              ref={flatListRef}
+              data={orders}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => (
+                <View style={styles.orderItem}>
+                  <View style={styles.centerSingleItem}>
+                    <Text style={styles.orderId}>Tafel {item.table}</Text>
+                  </View>
+                  <View style={styles.spaceBetweenRow}>
+                    <Text style={styles.orderDetail}>
+                      {new Date(item.orderDate).toDateString() ===
+                      new Date().toDateString()
+                        ? new Date(item.orderDate).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false, // Add this option to use 24-hour format
+                          })
+                        : new Date(item.orderDate).toLocaleDateString("nl", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                          })}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginBottom: 5,
+                        fontWeight: "bold",
+                        color:
+                          item.status === "unprocessed" ? "red" : "#4a9c3a",
+                      }}
+                    >
+                      {item.status === "unprocessed"
+                        ? "NIET AFGEHANDELD"
+                        : item.status === "processed"
+                        ? "AFGEHANDELD"
+                        : "BETAALD"}
+                    </Text>
+                  </View>
+                  <View style={styles.productCards}>
+                    {item.products.map((product, index) => (
+                      <View key={index} style={styles.productItem}>
+                        <View style={styles.spaceBetweenRow}>
+                          <Text style={styles.productDetail}>
+                            {index + 1}. {product.name}
+                          </Text>
+                          <Text style={styles.productDetail}>
+                            €{product.price.toFixed(2)}
+                          </Text>
+                        </View>
+                        {product.selectedOptions.map((option, index) => (
+                          <View
+                            key={index}
+                            style={[styles.spaceBetweenRow, styles.option]}
+                          >
+                            <Text style={styles.optionText}>
+                              + {option.name}
+                            </Text>
+                            <Text style={styles.optionText}>
+                              €{option.price.toFixed(2)}
+                            </Text>
+                          </View>
+                        ))}
+                        {/* <Text style={styles.productDetail}>
 											{product.selectedOptions
 												.map((option) => option.name)
 												.join(", ")}
 										</Text> */}
+                      </View>
+                    ))}
                   </View>
-                ))}
-              </View>
-              {item.notes && (
-                <View style={styles.notes}>
-                  <Text>Notes:</Text>
-                  <Text>{item.notes}</Text>
+                  {item.notes && (
+                    <View style={styles.notes}>
+                      <Text>Notes:</Text>
+                      <Text>{item.notes}</Text>
+                    </View>
+                  )}
+                  <View style={styles.spaceBetweenRow}>
+                    <View style={styles.buttonGroup}>
+                      {item.status === "unprocessed" && (
+                        <TouchableOpacity
+                          style={styles.editButton}
+                          onPress={() => handleEditOrder(item._id)}
+                        >
+                          <Icon name="edit" size={20} color="white" />
+                          <Text style={{ color: "white", marginLeft: 5 }}>
+                            Bewerken
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+
+                      {item.status !== "paid" && (
+                        <TouchableOpacity
+                          style={styles.statusButton}
+                          onPress={() =>
+                            showStatusOptions(item._id, item.status)
+                          }
+                        >
+                          <Icon name="arrow-right" size={20} color="#fff" />
+                          <Text style={{ color: "white", marginLeft: 5 }}>
+                            {item.status === "unprocessed"
+                              ? "Afhandelen"
+                              : "Betaald"}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                      {item.status !== "paid" && (
+                        <TouchableOpacity
+                          style={styles.deleteButton}
+                          onPress={() => handleDeleteOrder(item._id)}
+                        >
+                          <Icon name="trash" size={20} color="white" />
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                    <Text style={styles.price}>
+                      €{item.totalPrice.toFixed(2)}
+                    </Text>
+                  </View>
                 </View>
               )}
-              <View style={styles.spaceBetweenRow}>
-                <View style={styles.buttonGroup}>
-                  {item.status === "unprocessed" && (
-                    <TouchableOpacity
-                      style={styles.editButton}
-                      onPress={() => handleEditOrder(item)}
-                    >
-                      <Icon name="edit" size={20} color="white" />
-                    </TouchableOpacity>
-                  )}
-                  {item.status !== "paid" && (
-                    <TouchableOpacity
-                      style={styles.statusButton}
-                      onPress={() => showStatusOptions(item._id, item.status)}
-                    >
-                      <Icon name="arrow-right" size={20} color="#000" />
-                    </TouchableOpacity>
-                  )}
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => handleDeleteOrder(item._id)}
-                  >
-                    <Icon name="trash" size={20} color="white" />
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.price}>€{item.totalPrice.toFixed(2)}</Text>
-              </View>
-            </View>
-          )}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        </View>
 
-      <FloatingButton />
+        <FloatingButton />
+      </SafeAreaView>
     </View>
   );
 };
@@ -257,7 +293,7 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingTop: 30,
   },
   welcomeText: {
     fontSize: 18,
@@ -274,6 +310,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  screendescription: {
+    marginBottom: 40,
   },
   orderId: {
     fontSize: 20,
@@ -298,7 +337,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#e27b00",
     borderRadius: 5,
-    marginRight: 10,
+    marginRight: 5,
     alignSelf: "flex-start", // Align button to the start of the flex container
     flexDirection: "row", // Align icon and text in a row
     alignItems: "center", // Center items vertically
@@ -338,11 +377,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   editButton: {
-    width: 40,
+    width: "auto",
     padding: 10,
     backgroundColor: "#007bff", // You can choose a different color
     borderRadius: 5,
-    marginRight: 10,
+    marginRight: 5,
     alignSelf: "flex-start",
     flexDirection: "row",
     justifyContent: "center",

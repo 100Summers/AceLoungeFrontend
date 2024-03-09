@@ -247,6 +247,9 @@ const NieuweBestellingForm = () => {
   return (
     <View>
       <View style={styles.page}>
+        <Text style={styles.screendescription}>
+          Voeg hier een nieuwe bestelling toe.
+        </Text>
         <Text style={styles.label}>Tafel:</Text>
         <TextInput
           style={styles.input}
@@ -297,7 +300,7 @@ const NieuweBestellingForm = () => {
             style={styles.savebutton}
             onPress={() => handleSubmit(table, selectedProducts, notes)}
           >
-            <Text style={styles.buttontext}>Bestelling aanmaken</Text>
+            <Text style={styles.buttontext}>Nieuwe bestelling toevoegen</Text>
           </Pressable>
         </View>
       </View>
@@ -322,8 +325,7 @@ const styles = StyleSheet.create({
   buttontext: {
     color: "white",
     textAlign: "center",
-    fontWeight: "500",
-    fontSize: 15,
+    fontWeight: "600",
   },
   select: {
     borderWidth: 1,
@@ -343,6 +345,9 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     justifyContent: "center",
     alignItems: "center",
+  },
+  screendescription: {
+    marginBottom: 40,
   },
 
   selectt: {
@@ -540,7 +545,7 @@ const styles = StyleSheet.create({
   },
   orderSummary: {
     backgroundColor: "white",
-    padding: 15,
+    padding: 20,
     marginVertical: 0,
   },
   page: {
