@@ -118,6 +118,7 @@ const Bestellingen = ({ navigation }) => {
       console.error("Fout tijdens bijwerken status:", error);
     }
   };
+  
 
   const showStatusOptions = (orderId, currentStatus) => {
     let newStatus = currentStatus === "unprocessed" ? "processed" : "paid";
