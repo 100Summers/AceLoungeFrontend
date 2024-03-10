@@ -59,7 +59,7 @@ const FirstRoute = () => {
         );
         const data = await response.json();
         // Filter out items with qty 0 or less and not deleted
-        const filteredData = data.filter((item) => item.qty > 0 && !item.deleted);
+        const filteredData = data.filter((item) => !item.deleted);
         setMenuItems(filteredData);
       } catch (error) {
         console.error("Error fetching data:", error);
