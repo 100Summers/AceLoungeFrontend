@@ -474,7 +474,7 @@ export default function TabViewExample() {
       </SafeAreaView>
 
       <View style={{ marginHorizontal: 20 }}>
-        <Text style={styles.screendescription}>
+        <Text style={[styles.screendescription, { marginTop: 25 }]}>
           Bekijk hier alle producten van de menukaart.
         </Text>
       </View>
