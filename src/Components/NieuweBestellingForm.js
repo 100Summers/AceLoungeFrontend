@@ -225,7 +225,7 @@ const NieuweBestellingForm = () => {
       Alert.alert("Fout", "Selecteer minimaal één product.");
       return; // Exit the function early if no products are selected
     }
-
+  
     console.log("Submitting order...");
     console.log(products);
     const response = await fetch("https://nl-app.onrender.com/orders", {
@@ -248,6 +248,7 @@ const NieuweBestellingForm = () => {
     }
     navigation.navigate("HomeScreen");
   };
+  
 
   return (
     <View>
