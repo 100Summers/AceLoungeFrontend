@@ -311,8 +311,8 @@ const EditBestelling = () => {
               </Text>
             </View>
 
-            {order.items.map((item, index) => (
-  <View key={`${item.product}_${index}`}>
+            {order.items.map((item) => (
+  <View key={item._id}>
     <AddedItem
       productID={item.product}
       selectedOptions={item.selectedOptions}
