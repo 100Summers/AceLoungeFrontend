@@ -310,16 +310,16 @@ const EditBestelling = () => {
                 {selectedProducts.length}
               </Text>
             </View>
-
-            {order.items.map((item) => (
-  <View key={item._id}>
-    <AddedItem
-      productID={item.product}
-      selectedOptions={item.selectedOptions}
-    />
-  </View>
-))}
-
+            <View key={selectedProducts.length}>
+              {order.items.map((item,index) => (
+                <View key={`${item.product}-${index}`}>
+                <AddedItem
+                  productID={item.product}
+                  selectedOptions={item.selectedOptions}
+                />
+              </View>
+              ))}
+            </View>
             <View
               style={[
                 styles.spaceBetweenRow,
