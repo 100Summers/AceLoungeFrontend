@@ -10,18 +10,21 @@ import {
   TouchableOpacity,
   Alert,
   Switch,
+  ActivityIndicator,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker"; // Import the Picker component
+import { Picker } from "@react-native-picker/picker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const Nieuwproduct = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [ingredients, setIngredients] = useState("");
-  const [category, setCategory] = useState("food"); // Default to 'food' as per schema
-  const [stockable, setStockable] = useState(false); // Default to true as per schema
+  const [category, setCategory] = useState("food");
+  const [stockable, setStockable] = useState(false);
   const [qty, setQty] = useState("");
   const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const handleOptionNameChange = (index, value) => {
     const newOptions = [...options];
     newOptions[index].name = value;
@@ -43,6 +46,7 @@ const Nieuwproduct = () => {
     newOptions.splice(index, 1);
     setOptions(newOptions);
   };
+
   const renderOptions = () => {
     return options.map((option, index) => (
       <View key={index} style={styles.optionContainer}>
@@ -74,56 +78,55 @@ const Nieuwproduct = () => {
   };
 
   const handleSubmit = async () => {
-    // Basic front-end validation
     if (!name || !price) {
       Alert.alert("Fout", "Vul alle verplichte velden in.");
       return;
     }
-  
+
     try {
+      setLoading(true);
+
       const product = {
         name,
         price: parseFloat(price),
         ingredients,
         category,
-        stockable, // Send the boolean value directly
-        qty: stockable ? parseInt(qty || 0, 10) : 0, // Set qty to 0 if stockable is false or qty is not entered
+        stockable,
+        qty: stockable ? parseInt(qty || 0, 10) : 0,
         options,
       };
-  
-      const response = await fetch("https://nl-app.onrender.com/products", {
+
+      const response = await fetch("https://backend-417014.rj.r.appspot.com/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Include other headers as required, e.g., authorization headers
         },
         body: JSON.stringify(product),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
           "Product toevoegen niet gelukt: " +
-            (errorData.message || "Unknown error")
+          (errorData.message || "Unknown error")
         );
       }
-  
+
       const responseData = await response.json();
       Alert.alert("Voltooid", "Product toegevoegd: " + responseData.name);
-      // Reset form fields
       setName("");
       setPrice("");
       setIngredients("");
-      setCategory("food"); // Reset to default as per schema
-      setStockable(true); // Reset stockable to true
-      setQty(""); // Reset qty
+      setCategory("food");
+      setStockable(true);
+      setQty("");
+      setLoading(false);
     } catch (error) {
       console.error(error);
       Alert.alert("Error", error.message);
+      setLoading(false);
     }
   };
-  
-
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, height: "auto" }}>
@@ -135,7 +138,6 @@ const Nieuwproduct = () => {
           Voeg hier een nieuw product toe aan het menu.
         </Text>
 
-        {/* <Text style={styles.text}>Add Product</Text> */}
         <Text style={styles.formlabel}>Naam product:</Text>
         <TextInput style={styles.input} value={name} onChangeText={setName} />
 
@@ -146,6 +148,7 @@ const Nieuwproduct = () => {
           onChangeText={setPrice}
           keyboardType="numeric"
         />
+
         <Text style={styles.formlabel}>Omschrijving:</Text>
         <TextInput
           style={styles.input}
@@ -158,7 +161,7 @@ const Nieuwproduct = () => {
           selectedValue={category}
           onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}
           style={styles.picker}
-          mode="dropdown" // Android only
+          mode="dropdown"
         >
           <Picker.Item
             style={styles.pickeritem}
@@ -172,6 +175,7 @@ const Nieuwproduct = () => {
           />
           <Picker.Item style={styles.pickeritem} label="Hapjes" value="snack" />
         </Picker>
+
         <Text style={styles.formlabel}>Voorraad bijhouden?</Text>
         <View style={styles.switchContainer}>
           <Switch
@@ -182,6 +186,7 @@ const Nieuwproduct = () => {
             value={stockable}
           />
         </View>
+
         {stockable && (
           <View>
             <Text style={styles.formlabel}>Huidige voorraad:</Text>
@@ -193,12 +198,23 @@ const Nieuwproduct = () => {
             />
           </View>
         )}
+
         {renderOptions()}
+
         <TouchableOpacity style={styles.addButton} onPress={addOption}>
           <Text style={styles.addButtonText}>Opties toevoegen</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Nieuw product toevoegen</Text>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Nieuw product toevoegen</Text>
+          )}
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </ScrollView>
@@ -206,7 +222,6 @@ const Nieuwproduct = () => {
 };
 
 export default Nieuwproduct;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -228,75 +243,14 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   addButton: {
-    backgroundColor: "transparent", // Adjust the color to match your app's theme if necessary
-    padding: 10,
-    borderRadius: 10,
-    alignItems: "center",
-    marginBottom: 0,
-    borderWidth: 1,
-    borderColor: "#e27b00",
-  },
-  addButtonText: {
-    color: "#e27b00",
-    fontWeight: "600",
-  },
-  removeButton: {
-    marginLeft: 10,
-    marginBottom: 10,
-    backgroundColor: "#dc3545", // Adjust the color to match your app's theme if necessary
-    padding: 5,
-    borderRadius: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  // If the input style is not already defined in Nieuwproduct.js, add it as well
-  input: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 10,
-    marginBottom: 20,
-    borderRadius: 10,
-    fontSize: 14,
-    color: "#333",
-  },
-  // ... existing styles for input ...
-  picker: {
-    height: 10,
-    overflow: "hidden",
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    marginBottom: 20,
-    borderRadius: 10,
-    fontSize: 14,
-    color: "#333",
-  },
-  formlabel: { fontWeight: "700", fontSize: 14, marginBottom: 7 },
-  pickeritem: {
-    fontSize: 14,
-  },
-  marginr: { marginRight: 10 },
-  switchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-    justifyContent: "space-between",
-  },
-  switchLabel: {
-    marginRight: 10,
-    fontSize: 14,
-  },
-  button: {
-    marginBottom: Platform.OS === "android" ? 60 : 0,
-    backgroundColor: "#e27b00",
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "600",
-  },
+    backgroundColor: "transparent",
+     padding: 10, borderRadius: 10,
+     alignItems: "center",
+      marginBottom: 0,
+       borderWidth: 1,
+        borderColor: "#e27b00",
+  }, 
+  addButtonText: { color: "#e27b00", fontWeight: "600", }, 
+  removeButton: { marginLeft: 10, marginBottom: 10, backgroundColor: "#dc3545", padding: 5, borderRadius: 5, justifyContent: "center", alignItems: "center", }, input: { backgroundColor: "#fff", borderWidth: 1, borderColor: "#ddd", padding: 10, marginBottom: 20, borderRadius: 10, fontSize: 14, color: "#333", }, picker: { height: 10, overflow: "hidden", backgroundColor: "#fff", borderWidth: 1, borderColor: "#ddd", marginBottom: 20, borderRadius: 10, fontSize: 14, color: "#333", }, formlabel: { fontWeight: "700", fontSize: 14, marginBottom: 7, }, pickeritem: { fontSize: 14, }, marginr: { marginRight: 10, }, switchContainer: { flexDirection: "row", alignItems: "center", marginBottom: 10, justifyContent: "space-between", }, switchLabel: { marginRight: 10, fontSize: 14, }, button: { marginBottom: Platform.OS === "android" ? 60 : 0, backgroundColor: "#e27b00", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 10, }, buttonText: { color: "white", fontWeight: "600", },
 });
+

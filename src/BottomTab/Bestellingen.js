@@ -23,7 +23,7 @@ const Bestellingen = ({ navigation }) => {
   // Abstract the fetch logic into a function
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("https://nl-app.onrender.com/orders");
+      const response = await axios.get("https://backend-417014.rj.r.appspot.com/orders");
       // Sort the orders by date from newest to oldest
       const sortedOrders = response.data.sort(
         (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
@@ -34,7 +34,7 @@ const Bestellingen = ({ navigation }) => {
           order.products = await Promise.all(
             order.products.map(async (product) => {
               const productDetails = await axios.get(
-                `https://nl-app.onrender.com/products/${product.product}`
+                `https://backend-417014.rj.r.appspot.com/products/${product.product}`
               );
               return {
                 ...product,
@@ -89,7 +89,7 @@ const Bestellingen = ({ navigation }) => {
   const handleDeleteOrder = async (orderId) => {
     try {
       const response = await axios.delete(
-        `https://nl-app.onrender.com/orders/${orderId}`
+        `https://backend-417014.rj.r.appspot.com/orders/${orderId}`
       );
       if (response.status === 200) {
         // Call fetchOrders to refresh the list after deletion
@@ -105,7 +105,7 @@ const Bestellingen = ({ navigation }) => {
 
   const changeOrderStatus = async (orderId, newStatus) => {
     try {
-      let patchUrl = `https://nl-app.onrender.com/orders/${orderId}/${newStatus}`;
+      let patchUrl = `https://backend-417014.rj.r.appspot.com/orders/${orderId}/${newStatus}`;
       const response = await axios.patch(patchUrl);
       if (response.status === 200) {
         // Call fetchOrders to refresh the list after status change
