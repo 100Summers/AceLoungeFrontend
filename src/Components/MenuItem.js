@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Toast from 'react-native-toast-message';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  TouchableNativeFeedback,
+} from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message";
 
 // State
-import { useDispatch } from 'react-redux';
-import { addItem } from '../State/orderSlice';
+import { useDispatch } from "react-redux";
+import { addItem } from "../State/orderSlice";
 
 const MenuItem = ({ menuItem }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -18,7 +24,9 @@ const MenuItem = ({ menuItem }) => {
 
   const handleSelectOption = (optionName, optionPrice) => {
     setSelectedOptions((prevOptions) => {
-      const optionIndex = prevOptions.findIndex((option) => option.name === optionName);
+      const optionIndex = prevOptions.findIndex(
+        (option) => option.name === optionName
+      );
       if (optionIndex !== -1) {
         // option already exists, remove it
         setTotalPrice((currPrice) => currPrice - optionPrice);
@@ -44,9 +52,9 @@ const MenuItem = ({ menuItem }) => {
     resetItem();
     // Show a toast message
     Toast.show({
-      type: 'success',
-      position: 'bottom',
-      text1: 'Item added to order!',
+      type: "success",
+      position: "bottom",
+      text1: "Item added to order!",
       visibilityTime: 4000,
       autoHide: true,
       topOffset: 30,
@@ -104,7 +112,7 @@ const MenuItem = ({ menuItem }) => {
         <Pressable
           style={({ pressed }) => [
             styles.addButton,
-            { backgroundColor: pressed ? '#d3d3d3' : '#e27b00' },
+            { backgroundColor: pressed ? "#f09324" : "#e27b00" },
           ]}
           onPress={handleSelectProduct}
         >
