@@ -14,7 +14,7 @@ import {
   Alert,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { ActivityIndicator } from 'react-native';
 import MenuItem from "./MenuItem";
 import AddedItem from "./AddedItem";
 import { useSelector, useDispatch } from "react-redux";
@@ -197,7 +197,7 @@ export function TabViewExample() {
 const NieuweBestellingForm = () => {
   const [table, setTable] = useState("1");
   const [notes, setNotes] = useState("");
-
+  const [loading, setLoading] = useState(false);
   // Empty cart when opening the form
   useEffect(() => {
     dispatch(emptyOrder());
@@ -219,6 +219,7 @@ const NieuweBestellingForm = () => {
 
   const dispatch = useDispatch();
   const handleSubmit = async (table, products, notes) => {
+    setLoading(true);
     // Check if no products are selected
     if (products.length === 0) {
       Alert.alert("Fout", "Selecteer minimaal één product.");
@@ -277,17 +278,17 @@ const NieuweBestellingForm = () => {
                 {selectedProducts.length}
               </Text>
             </View>
-
             <View key={selectedProducts.length}>
-            {selectedProducts.map((item, index) => (
-  <View key={`${item.product}-${index}`}>
-    <AddedItem
-      productID={item.product}
-      selectedOptions={item.selectedOptions}
-    />
-  </View>
-))}
-</View>
+              {selectedProducts.map((item, index) => (
+                <View key={`${item.product}-${index}`}>
+                  <AddedItem
+                    productID={item.product}
+                    selectedOptions={item.selectedOptions}
+                    dataFetched={true} // You would set this based on whether the data has been fetched
+                  />
+                </View>
+              ))}
+            </View>
 
 
             <View style={[styles.spaceBetweenRow, styles.mro]}>
@@ -303,12 +304,17 @@ const NieuweBestellingForm = () => {
             onChangeText={setNotes}
           />
 
-          <Pressable
-            style={styles.savebutton}
-            onPress={() => handleSubmit(table, selectedProducts, notes)}
-          >
-            <Text style={styles.buttontext}>Nieuwe bestelling toevoegen</Text>
-          </Pressable>
+<Pressable
+        style={styles.savebutton}
+        onPress={() => handleSubmit(table, selectedProducts, notes)}
+        disabled={loading} // Disable the button when loading
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+          <Text style={styles.buttontext}>Nieuwe bestelling toevoegen</Text>
+        )}
+      </Pressable>
         </View>
       </View>
     </View>
