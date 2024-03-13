@@ -35,7 +35,7 @@ const Voorraad = () => {
   const fetchStockableProducts = async () => {
     try {
       const response = await fetch(
-        "https://nl-app.onrender.com/products/stock"
+        "https://backend-417014.rj.r.appspot.com/products/stock"
       );
       const data = await response.json();
       // Filter out products that are not deleted and are stockable
@@ -69,7 +69,7 @@ const Voorraad = () => {
   const handleUpdateQuantity = async () => {
     try {
       const response = await fetch(
-        `https://nl-app.onrender.com/products/stock/${editProductId}`,
+        `https://backend-417014.rj.r.appspot.com/products/stock/${editProductId}`,
         {
           method: "PATCH",
           headers: {
@@ -96,7 +96,7 @@ const Voorraad = () => {
   const handleDelete = async (productId) => {
     try {
       const response = await fetch(
-        `https://nl-app.onrender.com/products/${productId}`,
+        `https://backend-417014.rj.r.appspot.com/products/${productId}`,
         {
           method: "DELETE",
           headers: {

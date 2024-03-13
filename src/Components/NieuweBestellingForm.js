@@ -55,7 +55,7 @@ const FirstRoute = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://nl-app.onrender.com/products/categories/food"
+          "https://backend-417014.rj.r.appspot.com/products/categories/food"
         );
         const data = await response.json();
         // Filter out items with qty 0 or less and not deleted
@@ -94,7 +94,7 @@ const SecondRoute = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://nl-app.onrender.com/products/categories/drink"
+          "https://backend-417014.rj.r.appspot.com/products/categories/drink"
         );
         const data = await response.json();
         // Filter out items with qty 0 or less and not deleted
@@ -133,7 +133,7 @@ const ThirdRoute = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://nl-app.onrender.com/products/categories/snack"
+          "https://backend-417014.rj.r.appspot.com/products/categories/snack"
         );
         const data = await response.json();
         // Filter out items with qty 0 or less and not deleted
@@ -227,7 +227,7 @@ const NieuweBestellingForm = () => {
 
     console.log("Submitting order...");
     console.log(products);
-    const response = await fetch("https://nl-app.onrender.com/orders", {
+    const response = await fetch("https://backend-417014.rj.r.appspot.com/orders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -15,7 +15,7 @@ const AddedItem = ({ productID, selectedOptions }) => {
       try {
         console.log(productID);
         const response = await fetch(
-          `https://nl-app.onrender.com/products/${productID}`
+          `https://backend-417014.rj.r.appspot.com/products/${productID}`
         );
         const data = await response.json();
         setMenuItem(data);

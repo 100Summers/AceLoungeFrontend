@@ -19,7 +19,7 @@ const Login = ({ navigation }) => {
 
   const handleLogin = () => {
     setLoading(true);
-    const loginUrl = "https://nl-app.onrender.com/users/login";
+    const loginUrl = "https://backend-417014.rj.r.appspot.com/users/login";
 
     fetch(loginUrl, {
       method: "POST",

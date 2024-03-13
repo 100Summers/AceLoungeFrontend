@@ -62,7 +62,7 @@ const AddReservation = ({ navigation }) => {
 
     try {
       const response = await axios.post(
-        "https://nl-app.onrender.com/reservations",
+        "https://backend-417014.rj.r.appspot.com/reservations",
         {
           name,
           dateTime,
