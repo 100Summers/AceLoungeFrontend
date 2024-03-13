@@ -24,7 +24,7 @@ const Signup = ({ navigation }) => {
       return;
     }
 
-    const signupUrl = "https://nl-app.onrender.com/users"; // Replace with your backend's actual URL
+    const signupUrl = "https://backend-417014.rj.r.appspot.com/users"; // Replace with your backend's actual URL
 
     fetch(signupUrl, {
       method: "POST",

@@ -24,7 +24,7 @@ const Home = () => {
   const fetchReservations = useCallback(async () => {
     try {
       const response = await axios.get(
-        "https://nl-app.onrender.com/reservations"
+        "https://backend-417014.rj.r.appspot.com/reservations"
       );
       const today = new Date();
       let todaysReservations = response.data.filter((reservation) => {

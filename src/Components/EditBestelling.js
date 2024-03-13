@@ -61,7 +61,7 @@ const FirstRoute = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://nl-app.onrender.com/products/categories/food"
+          "https://backend-417014.rj.r.appspot.com/products/categories/food"
         );
         const data = await response.json();
         // Filter out items with qty 0 or less
@@ -100,7 +100,7 @@ const SecondRoute = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://nl-app.onrender.com/products/categories/drink"
+          "https://backend-417014.rj.r.appspot.com/products/categories/drink"
         );
         const data = await response.json();
         // Filter out items with qty 0 or less
@@ -139,7 +139,7 @@ const ThirdRoute = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://nl-app.onrender.com/products/categories/snack"
+          "https://backend-417014.rj.r.appspot.com/products/categories/snack"
         );
         const data = await response.json();
         // Filter out items with qty 0 or less
@@ -219,7 +219,7 @@ const EditBestelling = () => {
     const fetchOrder = async () => {
       try {
         const response = await fetch(
-          `https://nl-app.onrender.com/orders/${orderId}`
+          `https://backend-417014.rj.r.appspot.com/orders/${orderId}`
         );
         const data = await response.json();
         setTable(data.table.toString());
@@ -258,13 +258,13 @@ const EditBestelling = () => {
 
     console.log("Submitting order...");
     const deleteResponse = await fetch(
-      `https://nl-app.onrender.com/orders/${orderId}`,
+      `https://backend-417014.rj.r.appspot.com/orders/${orderId}`,
       {
         method: "DELETE",
       }
     );
 
-    const response = await fetch(`https://nl-app.onrender.com/orders`, {
+    const response = await fetch(`https://backend-417014.rj.r.appspot.com/orders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -310,16 +310,16 @@ const EditBestelling = () => {
                 {selectedProducts.length}
               </Text>
             </View>
-
-            {order.items.map((item) => (
-  <View key={item._id}>
-    <AddedItem
-      productID={item.product}
-      selectedOptions={item.selectedOptions}
-    />
-  </View>
-))}
-
+            <View key={selectedProducts.length}>
+              {order.items.map((item,index) => (
+                <View key={`${item.product}-${index}`}>
+                <AddedItem
+                  productID={item.product}
+                  selectedOptions={item.selectedOptions}
+                />
+              </View>
+              ))}
+            </View>
             <View
               style={[
                 styles.spaceBetweenRow,
