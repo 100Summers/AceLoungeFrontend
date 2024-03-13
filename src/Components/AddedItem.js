@@ -9,6 +9,7 @@ import { addItem, removeItem } from "../State/orderSlice";
 const AddedItem = ({ productID, selectedOptions }) => {
   const [menuItem, setMenuItem] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
+  const [dataFetched, setDataFetched] = useState(false); // State to track if data is fetched
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,12 +25,13 @@ const AddedItem = ({ productID, selectedOptions }) => {
           price += selectedOptions[i].price;
         }
         setTotalPrice(price);
+        setDataFetched(true); // Set dataFetched to true after data is successfully fetched
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, []);
+  }, [productID, selectedOptions]);
 
   const dispatch = useDispatch();
 
@@ -69,12 +71,14 @@ const AddedItem = ({ productID, selectedOptions }) => {
         <Text style={styles.menuItemPrice}>
           Productprijs: €{totalPrice.toFixed(2)}
         </Text>
-        <Pressable
-          style={styles.addButton}
-          onPress={() => handleRemoveProduct(productID, selectedOptions)}
-        >
-          <MaterialCommunityIcons name="delete" size={20} color="white" />
-        </Pressable>
+        {dataFetched && (
+          <Pressable
+            style={styles.addButton}
+            onPress={() => handleRemoveProduct(productID, selectedOptions)}
+          >
+            <MaterialCommunityIcons name="delete" size={20} color="white" />
+          </Pressable>
+        )}
       </View>
     </View>
   );
