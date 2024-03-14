@@ -96,7 +96,7 @@ const Nieuwproduct = () => {
         options,
       };
 
-      const response = await fetch("https://backend-417014.rj.r.appspot.com/products", {
+      const response = await fetch("http://208.109.231.135/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -53,7 +53,7 @@ const FirstRoute = () => {
     try {
       // Make a GET request to the server to fetch food category products
       const response = await fetch(
-        "https://backend-417014.rj.r.appspot.com/products/categories/food"
+        "http://208.109.231.135/products/categories/food"
       );
       const data = await response.json();
 
@@ -90,7 +90,7 @@ const FirstRoute = () => {
     try {
       // Make a DELETE request to the server to soft delete the product
       const response = await fetch(
-        `https://backend-417014.rj.r.appspot.com/products/${productId}`,
+        `http://208.109.231.135/products/${productId}`,
         {
           method: "DELETE",
           // If needed, include headers for authorization or other information
@@ -193,7 +193,7 @@ const SecondRoute = () => {
     try {
       // Make a GET request to the server to fetch food category products
       const response = await fetch(
-        "https://backend-417014.rj.r.appspot.com/products/categories/drink"
+        "http://208.109.231.135/products/categories/drink"
       );
       const data = await response.json();
 
@@ -237,7 +237,7 @@ const SecondRoute = () => {
     try {
       // Make a DELETE request to the server to soft delete the product
       const response = await fetch(
-        `https://backend-417014.rj.r.appspot.com/products/${productId}`,
+        `http://208.109.231.135/products/${productId}`,
         {
           method: "DELETE",
           // If needed, include headers for authorization or other information
@@ -340,7 +340,7 @@ const ThirdRoute = () => {
     try {
       // Make a GET request to the server to fetch food category products
       const response = await fetch(
-        "https://backend-417014.rj.r.appspot.com/products/categories/snack"
+        "http://208.109.231.135/products/categories/snack"
       );
       const data = await response.json();
 
@@ -384,7 +384,7 @@ const ThirdRoute = () => {
     try {
       // Make a DELETE request to the server to soft delete the product
       const response = await fetch(
-        `https://backend-417014.rj.r.appspot.com/products/${productId}`,
+        `http://208.109.231.135/products/${productId}`,
         {
           method: "DELETE",
           // If needed, include headers for authorization or other information
