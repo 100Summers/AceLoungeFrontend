@@ -71,7 +71,7 @@ const EditMenuKaart = () => {
       };
 
       const response = await fetch(
-        `https://backend-417014.rj.r.appspot.com/products/${product._id}`,
+        `http://208.109.231.135/products/${product._id}`,
         {
           method: "PATCH",
           headers: {

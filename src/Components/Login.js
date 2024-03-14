@@ -19,7 +19,7 @@ const Login = ({ navigation }) => {
 
   const handleLogin = () => {
     setLoading(true);
-    const loginUrl = "https://backend-417014.rj.r.appspot.com/users/login";
+    const loginUrl = "http://208.109.231.135/users/login";
 
     fetch(loginUrl, {
       method: "POST",
