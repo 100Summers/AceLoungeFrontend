@@ -55,7 +55,7 @@ const FirstRoute = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://backend-417014.rj.r.appspot.com/products/categories/food"
+          "http://208.109.231.135/products/categories/food"
         );
         const data = await response.json();
         // Filter out items with qty 0 or less and not deleted
@@ -94,7 +94,7 @@ const SecondRoute = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://backend-417014.rj.r.appspot.com/products/categories/drink"
+          "http://208.109.231.135/products/categories/drink"
         );
         const data = await response.json();
         // Filter out items with qty 0 or less and not deleted
@@ -133,7 +133,7 @@ const ThirdRoute = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://backend-417014.rj.r.appspot.com/products/categories/snack"
+          "http://208.109.231.135/products/categories/snack"
         );
         const data = await response.json();
         // Filter out items with qty 0 or less and not deleted
@@ -228,7 +228,7 @@ const NieuweBestellingForm = () => {
 
     console.log("Submitting order...");
     console.log(products);
-    const response = await fetch("https://backend-417014.rj.r.appspot.com/orders", {
+    const response = await fetch("http://208.109.231.135/orders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
