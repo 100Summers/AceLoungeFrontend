@@ -110,13 +110,30 @@ const Bestellingen = ({ navigation }) => {
       if (response.status === 200) {
         // Call fetchOrders to refresh the list after status change
         fetchOrders();
+  
+        // Optionally, handle any additional logic with the response data
+        // For example, if you need to check for low stock products as in the original function
+        if (response.data.lowStockProducts && response.data.lowStockProducts.length > 0) {
+          // Display an alert or some form of notification to the user
+          alert('Some products are running low on stock!');
+  
+          // Optionally, list the products that are low on stock
+          response.data.lowStockProducts.forEach(product => {
+            console.log(`Product ${product.name} is low on stock. Only ${product.qty} left.`);
+          });
+        }
+  
+        console.log('Order status updated:', response.data.updatedOrder);
       } else {
         throw new Error("Status bijwerken mislukt.");
       }
     } catch (error) {
       console.error("Fout tijdens bijwerken status:", error);
+      Alert.alert("Fout", error.message || "Status bijwerken mislukt.");
     }
   };
+  
+
 
   const showStatusOptions = (orderId, currentStatus) => {
     let newStatus = currentStatus === "unprocessed" ? "processed" : "paid";
@@ -209,7 +226,7 @@ const Bestellingen = ({ navigation }) => {
                           <Text
                             style={[styles.productDetail, { fontWeight: 600 }]}
                           >
-                            €{product.price.toFixed(2)}
+                            SRD {product.price.toFixed(2)}
                           </Text>
                         </View>
                         {product.selectedOptions.map((option, index) => (
@@ -225,7 +242,7 @@ const Bestellingen = ({ navigation }) => {
                             <Text
                               style={[styles.optionText, { color: "grey" }]}
                             >
-                              €{option.price.toFixed(2)}
+                              SRD {option.price.toFixed(2)}
                             </Text>
                           </View>
                         ))}
@@ -252,7 +269,7 @@ const Bestellingen = ({ navigation }) => {
                     </Text>
                     <View>
                       <Text style={styles.price}>
-                        €{item.totalPrice.toFixed(2)}
+                        SRD {item.totalPrice.toFixed(2)}
                       </Text>
                     </View>
                   </View>

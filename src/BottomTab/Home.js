@@ -20,6 +20,24 @@ const Home = () => {
   const isFocused = useIsFocused(); // Hook to check if the screen is focused
   const [reservations, setReservations] = useState([]);
   const [selectedReservationId, setSelectedReservationId] = useState(null);
+  const [lowStockProducts, setLowStockProducts] = useState([]);
+
+  const fetchLowStockProducts = useCallback(async () => {
+    try {
+      const response = await axios.get("http://208.109.231.135/products"); // Replace with your actual API endpoint
+      const lowStock = response.data.filter(product => product.stockable && product.qty < 10);
+      setLowStockProducts(lowStock);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchLowStockProducts();
+    }
+  }, [isFocused, fetchLowStockProducts]);
+
 
   const fetchReservations = useCallback(async () => {
     try {
@@ -67,6 +85,20 @@ const Home = () => {
         <Header name="Home" />
       </SafeAreaView>
       <View style={styles.maincontent}>
+
+      {lowStockProducts.length > 0 && (
+        <View style={styles.lowStockContainer}>
+          <Text style={styles.lowStockHeader}>Low Stock Products:</Text>
+          {lowStockProducts.map((product) => (
+            <View key={product._id} style={styles.lowStockItem}>
+              <Text style={styles.lowStockText}>
+                {product.name} - Quantity: {product.qty}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+
         <OrdersToDo />
 
         <View
@@ -170,4 +202,29 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   // ... other styles you may have
+  lowStockContainer: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+  },
+  lowStockHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color:'#e27b00',
+  },
+  lowStockItem: {
+    paddingVertical: 5,
+    borderBottomColor: '#eee',
+  },
+  lowStockText: {
+    fontSize: 16,
+    fontWeight: "400",
+  },
 });

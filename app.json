@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Ace Lounge",
-    "slug": "ace-lounge-app",
+    "slug": "aceloungeres",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/AceLogo.png",
@@ -24,8 +24,9 @@
         "backgroundColor": "#ffffff"
       },
       "package": "aceloungesu.app",
-      "permissions": ["android.permission.INTERNET"]
-
+      "permissions": [
+        "android.permission.INTERNET"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,22 +35,23 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/8852ced2-2da9-42da-9821-c2c2d8229549"
+      "url": "https://u.expo.dev/3414ad64-db2c-430f-995c-1fbe9c25e8b4"
     },
-    "owner": "ryss94",
+    "owner": "mustafa_alhasan12",
     "extra": {
       "eas": {
-        "projectId": "81f55dbc-ebbb-4d5f-b17a-8b5e61f58d8c"
+        "projectId": "3414ad64-db2c-430f-995c-1fbe9c25e8b4"
       }
     },
     "plugins": [
       [
-      "expo-build-properties", {
-        "android": {
-          "usesCleartextTraffic": true
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
-      }
+      ]
     ]
-  ]
   }
 }

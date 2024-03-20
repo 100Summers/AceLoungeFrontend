@@ -86,7 +86,7 @@ const MenuItem = ({ menuItem }) => {
               </View>
               <Text style={styles.menuItemOptionName}>{option.name}</Text>
             </View>
-            <Text>€{option.price.toFixed(2)}</Text>
+            <Text>SRD {option.price.toFixed(2)}</Text>
           </View>
         </Pressable>
       );
@@ -100,14 +100,14 @@ const MenuItem = ({ menuItem }) => {
           <Text style={styles.menuItemName}>{menuItem.name}</Text>
           <Text style={styles.menuItemIngredients}>{menuItem.ingredients}</Text>
         </View>
-        <Text style={styles.menuItemPrice}>€{menuItem.price.toFixed(2)}</Text>
+        <Text style={styles.menuItemPrice}>SRD {menuItem.price.toFixed(2)}</Text>
       </View>
 
       <View style={styles.menuItemOptions}>{renderOptions()}</View>
 
       <View style={styles.menuItemFooter}>
         <Text style={styles.menuItemPrice}>
-          Total: €{totalPrice.toFixed(2)}
+          Total: SRD {totalPrice.toFixed(2)}
         </Text>
         <Pressable
           style={({ pressed }) => [

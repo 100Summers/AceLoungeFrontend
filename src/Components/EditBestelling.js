@@ -327,7 +327,7 @@ const EditBestelling = () => {
               ]}
             >
               <Text style={styles.menuItemName}>Totaal</Text>
-              <Text style={styles.menuItemPrice}>€{totalPrice.toFixed(2)}</Text>
+              <Text style={styles.menuItemPrice}>SRD {totalPrice.toFixed(2)}</Text>
             </View>
           </View>
 

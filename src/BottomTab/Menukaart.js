@@ -118,7 +118,7 @@ const FirstRoute = () => {
     return menuItem.options.map((option, optionIndex) => (
       <View key={optionIndex} style={styles.menuItemOption}>
         <Text style={styles.menuItemOptionName}>{option.name}</Text>
-        <Text style={styles.menuItemOptionPrice}>€{option.price}</Text>
+        <Text style={styles.menuItemOptionPrice}>SRD {option.price}</Text>
         {optionIndex < menuItem.options.length && (
           <View style={styles.menuItemOptionDivider} />
         )}
@@ -146,7 +146,7 @@ const FirstRoute = () => {
             {menuItem.options && renderMenuItemOptions(menuItem)}
             <View style={styles.menuItemDetails}>
               <Text style={styles.menuItemPrice}>
-                €{menuItem.price.toFixed(2)}
+                SRD {menuItem.price.toFixed(2)}
               </Text>
               {canEdit && (
                 <View style={styles.buttonContainer}>
@@ -265,7 +265,7 @@ const SecondRoute = () => {
     return menuItem.options.map((option, optionIndex) => (
       <View key={optionIndex} style={styles.menuItemOption}>
         <Text style={styles.menuItemOptionName}>{option.name}</Text>
-        <Text style={styles.menuItemOptionPrice}>€{option.price}</Text>
+        <Text style={styles.menuItemOptionPrice}>SRD {option.price}</Text>
         {optionIndex < menuItem.options.length && (
           <View style={styles.menuItemOptionDivider} />
         )}
@@ -293,7 +293,7 @@ const SecondRoute = () => {
             {menuItem.options && renderMenuItemOptions(menuItem)}
             <View style={styles.menuItemDetails}>
               <Text style={styles.menuItemPrice}>
-                €{menuItem.price.toFixed(2)}
+                SRD {menuItem.price.toFixed(2)}
               </Text>
               {canEdit && (
                 <View style={styles.buttonContainer}>
@@ -412,7 +412,7 @@ const ThirdRoute = () => {
     return menuItem.options.map((option, optionIndex) => (
       <View key={optionIndex} style={styles.menuItemOption}>
         <Text style={styles.menuItemOptionName}>{option.name}</Text>
-        <Text style={styles.menuItemOptionPrice}>€{option.price}</Text>
+        <Text style={styles.menuItemOptionPrice}>SRD {option.price}</Text>
         {optionIndex < menuItem.options.length && (
           <View style={styles.menuItemOptionDivider} />
         )}
@@ -440,7 +440,7 @@ const ThirdRoute = () => {
             {menuItem.options && renderMenuItemOptions(menuItem)}
             <View style={styles.menuItemDetails}>
               <Text style={styles.menuItemPrice}>
-                €{menuItem.price.toFixed(2)}
+                SRD {menuItem.price.toFixed(2)}
               </Text>
               {canEdit && (
                 <View style={styles.buttonContainer}>
