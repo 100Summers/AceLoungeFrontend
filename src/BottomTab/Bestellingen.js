@@ -103,41 +103,36 @@ const Bestellingen = ({ navigation }) => {
     }
   };
 
-function changeOrderStatus(orderId) {
-  // Send a PATCH request to the server to mark the order as processed
-  fetch(`http://208.109.231.135/orders/${orderId}/processed`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      // Include other headers as needed, like authorization tokens
-    },
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+  const changeOrderStatus = async (orderId, newStatus) => {
+    try {
+      let patchUrl = `http://208.109.231.135/orders/${orderId}/${newStatus}`;
+      const response = await axios.patch(patchUrl);
+      if (response.status === 200) {
+        // Call fetchOrders to refresh the list after status change
+        fetchOrders();
+  
+        // Optionally, handle any additional logic with the response data
+        // For example, if you need to check for low stock products as in the original function
+        if (response.data.lowStockProducts && response.data.lowStockProducts.length > 0) {
+          // Display an alert or some form of notification to the user
+          alert('Some products are running low on stock!');
+  
+          // Optionally, list the products that are low on stock
+          response.data.lowStockProducts.forEach(product => {
+            console.log(`Product ${product.name} is low on stock. Only ${product.qty} left.`);
+          });
+        }
+  
+        console.log('Order status updated:', response.data.updatedOrder);
+      } else {
+        throw new Error("Status bijwerken mislukt.");
+      }
+    } catch (error) {
+      console.error("Fout tijdens bijwerken status:", error);
+      Alert.alert("Fout", error.message || "Status bijwerken mislukt.");
     }
-    return response.json();
-  })
-  .then(data => {
-    // Check if there are any low stock products
-    if (data.lowStockProducts && data.lowStockProducts.length > 0) {
-      // Display an alert or some form of notification to the user
-      alert('Some products are running low on stock!');
-
-      // Optionally, list the products that are low on stock
-      data.lowStockProducts.forEach(product => {
-        console.log(`Product ${product.name} is low on stock. Only ${product.qty} left.`);
-      });
-    }
-
-    // Handle the rest of the success logic here, e.g., updating the UI
-    console.log('Order has been processed:', data.updatedOrder);
-  })
-  .catch(error => {
-    // Handle any errors that occurred during the fetch
-    console.error('There has been a problem with your fetch operation:', error);
-  });
-}
+  };
+  
 
 
   const showStatusOptions = (orderId, currentStatus) => {

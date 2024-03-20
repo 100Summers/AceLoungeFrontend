@@ -24,7 +24,7 @@ import EditMenuKaart from "./src/Components/EditMenuKaart";
 // State management
 import store from "./store";
 import { Provider } from "react-redux";
-import Revenue from "./src/Components/Reveneu";
+import Omzetcijfers from "./src/Components/Omzetcijfers";
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -230,15 +230,15 @@ function StackNavigator() {
         }}
       />
        <Stack.Screen
-        name="Revenue"
-        component={Revenue}
+        name="Omzetcijfers"
+        component={Omzetcijfers}
         options={{
           headerShown: true,
           headerStyle: {
             backgroundColor: "#311213",
           },
           headerTintColor: "#e27b00",
-          headerTitle: "Revenue",
+          headerTitle: "Omzetcijfers",
         }}
       />
     </Stack.Navigator>
