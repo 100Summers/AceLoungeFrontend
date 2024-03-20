@@ -103,20 +103,42 @@ const Bestellingen = ({ navigation }) => {
     }
   };
 
-  const changeOrderStatus = async (orderId, newStatus) => {
-    try {
-      let patchUrl = `http://208.109.231.135/orders/${orderId}/${newStatus}`;
-      const response = await axios.patch(patchUrl);
-      if (response.status === 200) {
-        // Call fetchOrders to refresh the list after status change
-        fetchOrders();
-      } else {
-        throw new Error("Status bijwerken mislukt.");
-      }
-    } catch (error) {
-      console.error("Fout tijdens bijwerken status:", error);
+function changeOrderStatus(orderId) {
+  // Send a PATCH request to the server to mark the order as processed
+  fetch(`http://208.109.231.135/orders/${orderId}/processed`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      // Include other headers as needed, like authorization tokens
+    },
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-  };
+    return response.json();
+  })
+  .then(data => {
+    // Check if there are any low stock products
+    if (data.lowStockProducts && data.lowStockProducts.length > 0) {
+      // Display an alert or some form of notification to the user
+      alert('Some products are running low on stock!');
+
+      // Optionally, list the products that are low on stock
+      data.lowStockProducts.forEach(product => {
+        console.log(`Product ${product.name} is low on stock. Only ${product.qty} left.`);
+      });
+    }
+
+    // Handle the rest of the success logic here, e.g., updating the UI
+    console.log('Order has been processed:', data.updatedOrder);
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
+    console.error('There has been a problem with your fetch operation:', error);
+  });
+}
+
 
   const showStatusOptions = (orderId, currentStatus) => {
     let newStatus = currentStatus === "unprocessed" ? "processed" : "paid";
@@ -209,7 +231,7 @@ const Bestellingen = ({ navigation }) => {
                           <Text
                             style={[styles.productDetail, { fontWeight: 600 }]}
                           >
-                            €{product.price.toFixed(2)}
+                            SRD {product.price.toFixed(2)}
                           </Text>
                         </View>
                         {product.selectedOptions.map((option, index) => (
@@ -225,7 +247,7 @@ const Bestellingen = ({ navigation }) => {
                             <Text
                               style={[styles.optionText, { color: "grey" }]}
                             >
-                              €{option.price.toFixed(2)}
+                              SRD {option.price.toFixed(2)}
                             </Text>
                           </View>
                         ))}
@@ -252,7 +274,7 @@ const Bestellingen = ({ navigation }) => {
                     </Text>
                     <View>
                       <Text style={styles.price}>
-                        €{item.totalPrice.toFixed(2)}
+                        SRD {item.totalPrice.toFixed(2)}
                       </Text>
                     </View>
                   </View>

@@ -50,7 +50,7 @@ const AddedItem = ({ productID, selectedOptions }) => {
       <View style={styles.menuItemHeader}>
         <View style={styles.spaceBetweenRow}>
           <Text style={styles.menuItemName}>{menuItem.name}</Text>
-          <Text style={styles.menuItemPrice}>€{menuItem.price}</Text>
+          <Text style={styles.menuItemPrice}>SRD {menuItem.price}</Text>
         </View>
       </View>
 
@@ -60,7 +60,7 @@ const AddedItem = ({ productID, selectedOptions }) => {
             <View key={index} style={styles.menuItemOption}>
               <Text style={styles.menuItemOptionName}>{option.name}</Text>
               <Text style={styles.menuItemOptionPrice}>
-                €{option.price.toFixed(2)}
+                SRD {option.price.toFixed(2)}
               </Text>
             </View>
           );
@@ -69,7 +69,7 @@ const AddedItem = ({ productID, selectedOptions }) => {
 
       <View style={styles.menuItemFooter}>
         <Text style={styles.menuItemPrice}>
-          Productprijs: €{totalPrice.toFixed(2)}
+          Productprijs: SRD {totalPrice.toFixed(2)}
         </Text>
         {dataFetched && (
           <Pressable
