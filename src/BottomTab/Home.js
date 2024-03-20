@@ -14,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import OrdersToDo from "../Components/OrdersToDo";
 import FloatingButton from "../Components/FloatingButton";
 import axios from "axios";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const Home = () => {
   const navigation = useNavigation();
@@ -25,7 +26,9 @@ const Home = () => {
   const fetchLowStockProducts = useCallback(async () => {
     try {
       const response = await axios.get("http://208.109.231.135/products"); // Replace with your actual API endpoint
-      const lowStock = response.data.filter(product => product.stockable && product.qty < 10);
+      const lowStock = response.data.filter(
+        (product) => product.stockable && product.qty < 10
+      );
       setLowStockProducts(lowStock);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -38,12 +41,9 @@ const Home = () => {
     }
   }, [isFocused, fetchLowStockProducts]);
 
-
   const fetchReservations = useCallback(async () => {
     try {
-      const response = await axios.get(
-        "http://208.109.231.135/reservations"
-      );
+      const response = await axios.get("http://208.109.231.135/reservations");
       const today = new Date();
       let todaysReservations = response.data.filter((reservation) => {
         const reservationDate = new Date(reservation.dateTime);
@@ -85,19 +85,29 @@ const Home = () => {
         <Header name="Home" />
       </SafeAreaView>
       <View style={styles.maincontent}>
-
-      {lowStockProducts.length > 0 && (
-        <View style={styles.lowStockContainer}>
-          <Text style={styles.lowStockHeader}>Low Stock Products:</Text>
-          {lowStockProducts.map((product) => (
-            <View key={product._id} style={styles.lowStockItem}>
-              <Text style={styles.lowStockText}>
-                {product.name} - Quantity: {product.qty}
-              </Text>
+        {lowStockProducts.length > 0 && (
+          <View>
+            <View style={{ flexDirection: "row", marginTop: 20 }}>
+              <MaterialIcons
+                color="#e27b00"
+                size={24}
+                name="warning"
+                style={{ marginTop: -2 }}
+              />
+              <Text style={styles.contentheader}>Voorraad bijna op:</Text>
             </View>
-          ))}
-        </View>
-      )}
+            <View style={styles.lowStockContainer}>
+              {lowStockProducts.map((product) => (
+                <View key={product._id} style={styles.lowStockItem}>
+                  <Text style={styles.lowStockText}>{product.name}</Text>
+                  <Text style={styles.lowStockText}>
+                    Huidige voorraad: {product.qty}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
 
         <OrdersToDo />
 
@@ -203,11 +213,12 @@ const styles = StyleSheet.create({
   },
   // ... other styles you may have
   lowStockContainer: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    shadowColor: '#000',
+    marginTop: 15,
+    paddingHorizontal: 13,
+    paddingVertical: 8,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
@@ -215,16 +226,18 @@ const styles = StyleSheet.create({
   },
   lowStockHeader: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    color:'#e27b00',
+    color: "#e27b00",
   },
   lowStockItem: {
     paddingVertical: 5,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   lowStockText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "400",
   },
 });
