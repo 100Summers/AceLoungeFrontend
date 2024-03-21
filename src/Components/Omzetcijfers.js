@@ -1,9 +1,9 @@
 // @AceLoungeFrontend\src\Components\Omzetcijfers.js
 
-import React, { useState, useEffect } from 'react';
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { View, Text, Dimensions, StyleSheet } from "react-native";
+import { BarChart } from "react-native-chart-kit";
+import axios from "axios";
 
 const Omzetcijfers = () => {
   const [dailyRevenue, setDailyRevenue] = useState([]);
@@ -11,13 +11,15 @@ const Omzetcijfers = () => {
   useEffect(() => {
     const fetchDailyRevenue = async () => {
       try {
-        const response = await axios.get('http://208.109.231.135/orders/revenue/daily');
+        const response = await axios.get(
+          "http://208.109.231.135/orders/revenue/daily"
+        );
         const validData = response.data.filter((item) => {
           return item.totalRevenue !== null && isFinite(item.totalRevenue);
         });
         setDailyRevenue(validData);
       } catch (error) {
-        console.error('Error fetching daily revenue:', error);
+        console.error("Error fetching daily revenue:", error);
       }
     };
 
@@ -25,23 +27,23 @@ const Omzetcijfers = () => {
   }, []);
 
   const chartConfig = {
-    backgroundGradientFrom: '#fff',
-    backgroundGradientTo: '#fff',
+    backgroundGradientFrom: "#fff",
+    backgroundGradientTo: "#fff",
     color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     strokeWidth: 2,
     useShadowColorFromDataset: false,
     propsForDots: {
-      r: '3',
-      strokeWidth: '2',
-      stroke: '#e27b00',
-      fill: '#e27b00',
+      r: "3",
+      strokeWidth: "2",
+      stroke: "#e27b00",
+      fill: "#e27b00",
     },
   };
 
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get("window").width;
 
   const data = {
-    labels: dailyRevenue.map((revenue) => revenue._id || 'N/A'),
+    labels: dailyRevenue.map((revenue) => revenue._id || "N/A"),
     datasets: [
       {
         data: dailyRevenue.map((revenue) => {
@@ -56,18 +58,18 @@ const Omzetcijfers = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Daily Revenue</Text>
+      <Text style={styles.header}>Omzet per dag</Text>
       {dailyRevenue.length > 0 ? (
-        <LineChart
+        <BarChart
           data={data}
           width={screenWidth}
-          height={220}
+          height={250}
+          fromZero
           chartConfig={chartConfig}
-          bezier
           style={styles.chart}
         />
       ) : (
-        <Text style={styles.noDataText}>No data available to display chart</Text>
+        <Text style={styles.noDataText}>Geen data beschikbaar.</Text>
       )}
     </View>
   );
@@ -76,24 +78,24 @@ const Omzetcijfers = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#e0d5d6",
   },
   header: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    color: '#333',
+    color: "#333",
   },
   chart: {
     marginVertical: 8,
-    borderRadius: 16,
+    borderRadius: 0,
   },
   noDataText: {
     fontSize: 18,
-    color: '#666',
+    color: "#666",
   },
 });
 
