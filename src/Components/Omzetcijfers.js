@@ -30,10 +30,10 @@ const Omzetcijfers = () => {
     }
   };
   const chartConfig = {
-    backgroundGradientFrom: '#transparent',
-    backgroundGradientTo: '#transparent',
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientToOpacity: 0,
     color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    strokeWidth: 2,
+    strokeWidth: 3,
     useShadowColorFromDataset: false,
     propsForDots: {
       r: '3',
@@ -69,7 +69,7 @@ const Omzetcijfers = () => {
           const revenueValue = Number(revenue.totalRevenue);
           return isNaN(revenueValue) ? 0 : revenueValue;
         }),
-        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+        color: (opacity = 1) => `rgba(242, 123, 0, ${opacity})`,
       },
     ],
   };
