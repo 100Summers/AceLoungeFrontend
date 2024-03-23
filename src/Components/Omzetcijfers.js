@@ -63,32 +63,27 @@ const Omzetcijfers = () => {
       let label;
       switch (timeframe) {
         case "daily":
-          label = `${date.getMonth() + 1}/${date.getDate()}`; // Formats to "month/day"
+          label = `${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear().toString().substr(-2)}`; // Formats to "DD/MM/YY"
           break;
         case "monthly":
-          label = `${date.getMonth() + 1}/${date
-            .getFullYear()
-            .toString()
-            .substr(-2)}`; // Formats to "month/year"
+          label = `${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear().toString().substr(-2)}`; // Formats to "MM/YY"
           break;
         case "yearly":
           label = date.getFullYear().toString(); // Formats to "year"
           break;
         default:
-          label = `${date.getMonth() + 1}/${date.getDate()}`; // Default to "month/day"
+          label = `${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}`; // Default to "DD/MM"
       }
       return label;
     }),
     datasets: [
       {
-        data: revenueData.map((revenue) => {
-          const revenueValue = Number(revenue.totalRevenue);
-          return isNaN(revenueValue) ? 0 : revenueValue;
-        }),
+        data: revenueData.map((revenue) => revenue.totalRevenue),
         color: (opacity = 1) => `rgba(242, 123, 0, ${opacity})`,
       },
     ],
   };
+
 
   return (
     <View style={styles.container}>
@@ -205,14 +200,32 @@ const Omzetcijfers = () => {
       {/* Display Revenue Data */}
       <View style={styles.revenueDataContainer}>
         <Text style={styles.revenueDataTitle}>Omzet:</Text>
-        {revenueData.map((revenue, index) => (
-          <View key={index} style={styles.revenueDataRow}>
-            <Text style={styles.revenueDate}>{revenue._id}</Text>
-            <Text style={styles.revenueAmount}>
-              SRD {revenue.totalRevenue.toFixed(2)}
-            </Text>
-          </View>
-        ))}
+        {revenueData.map((revenue, index) => {
+          const date = new Date(revenue._id);
+          let formattedDate;
+          switch (timeframe) {
+            case "daily":
+              formattedDate = `${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear().toString().substr(-2)}`;
+              break;
+            case "monthly":
+              formattedDate = `${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear().toString().substr(-2)}`;
+              break;
+            case "yearly":
+              formattedDate = date.getFullYear().toString();
+              break;
+            default:
+              formattedDate = `${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}`;
+          }
+
+          return (
+            <View key={index} style={styles.revenueDataRow}>
+              <Text style={styles.revenueDate}>{formattedDate}</Text>
+              <Text style={styles.revenueAmount}>
+                SRD {revenue.totalRevenue.toFixed(2)}
+              </Text>
+            </View>
+          );
+        })}
       </View>
     </View>
   );
