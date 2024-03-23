@@ -11,10 +11,14 @@ import { BarChart } from "react-native-chart-kit";
 import axios from "axios";
 
 const Omzetcijfers = () => {
+  // Calculate last month's start and end dates
+  const initialEndDate = new Date();
+  const initialStartDate = new Date(new Date().setMonth(initialEndDate.getMonth() - 1));
+
   const [revenueData, setRevenueData] = useState([]);
   const [timeframe, setTimeframe] = useState("daily");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(initialStartDate);
+  const [endDate, setEndDate] = useState(initialEndDate);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
@@ -143,7 +147,7 @@ const Omzetcijfers = () => {
           style={styles.chart}
         />
       ) : (
-        <Text style={styles.noDataText}>Geen data beschikbaar.</Text>
+        <Text style={styles.noDataText}>laden</Text>
       )}
 
       {/* Timeframe Selection Buttons */}
