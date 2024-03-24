@@ -12,9 +12,10 @@ import axios from "axios";
 
 const Omzetcijfers = () => {
   // Calculate last month's start and end dates
-  const initialEndDate = new Date();
-  const initialStartDate = new Date(new Date().setMonth(initialEndDate.getMonth() - 1));
-
+// Calculate the start of the current month and today's date
+const today = new Date();
+const initialStartDate = new Date(today.getFullYear(), today.getMonth(), 1);
+const initialEndDate = today; // This is already today's date, so it's fine as is.
   const [revenueData, setRevenueData] = useState([]);
   const [timeframe, setTimeframe] = useState("daily");
   const [startDate, setStartDate] = useState(initialStartDate);
