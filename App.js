@@ -11,6 +11,7 @@ import { UserProvider } from "./src/contexts/UserContext";
 // Import screens and components
 import Login from "./src/Components/Login";
 import Home from "./src/BottomTab/Home";
+import Receipt from "./src/BottomTab/Receipt";
 import Menukaart from "./src/BottomTab/Menukaart";
 import Bestellingen from "./src/BottomTab/Bestellingen";
 import NieuweBestelling from "./src/Stack/NieuweBestelling";
@@ -250,6 +251,19 @@ function StackNavigator() {
           },
           headerTintColor: "#e27b00",
           headerTitle: "Omzetcijfers",
+          headerBackTitleVisible: false
+        }}
+      />
+             <Stack.Screen
+        name="Receipt"
+        component={Receipt}
+        options={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#311213",
+          },
+          headerTintColor: "#e27b00",
+          headerTitle: "Receipt",
           headerBackTitleVisible: false
         }}
       />
