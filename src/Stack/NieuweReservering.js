@@ -10,37 +10,27 @@ import {
 import { FAB } from "react-native-paper";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { useUser } from "../contexts/UserContext"; // Import useUser hook
+import { useUser } from "../contexts/UserContext";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-const ReservationItem = ({ item, onEdit, onDelete, canEdit }) => {
-  // Function to format the date and time
-  const formatDateTime = (dateTimeString) => {
-    const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    };
-    return new Date(dateTimeString).toLocaleDateString("nl", options);
-  };
+
+const ReservationItem = ({ item, onEdit, onDelete }) => {
+  // Simplify the dateTime display without specifying a time zone
+  const [datePart, timePart] = item.dateTime.split('T');
+  const dateTimeDisplay = `${datePart} ${timePart}`;
 
   return (
     <View style={styles.reservationItem}>
       <View style={styles.reservationInfo}>
         <Text style={styles.reservationText}>
-          Datum: {formatDateTime(item.dateTime)} uur
+          Datum: {dateTimeDisplay} uur
         </Text>
         <Text>Naam: {item.name}</Text>
         <Text>Aantal gasten: {item.numGuests}</Text>
-        {/* Display phone number if it exists */}
         {item.phone ? (
           <Text style={styles.reservationPhone}>
             Telefoonnummer: {item.phone}
           </Text>
         ) : null}
-        {/* Display notes if they exist */}
         {item.notes ? (
           <Text style={styles.reservationNotes}>Notities: {item.notes}</Text>
         ) : null}
@@ -67,7 +57,7 @@ const ReservationItem = ({ item, onEdit, onDelete, canEdit }) => {
 const NieuweReservering = () => {
   const [reservations, setReservations] = useState([]);
   const navigation = useNavigation();
-  const { user } = useUser(); // Use the useUser hook to access the user object
+  const { user } = useUser();
 
   const handleEdit = (item) => {
     navigation.navigate("EditReservation", { reservation: item });
@@ -91,30 +81,7 @@ const NieuweReservering = () => {
         "http://208.109.231.135/reservations"
       );
       const sortedReservations = response.data.sort((a, b) => {
-        // Convert dateTime strings to Date objects
-        const dateA = new Date(a.dateTime);
-        const dateB = new Date(b.dateTime);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Normalize today's date to midnight
-
-        // Check if dates are in the past, present, or future
-        const isPastA = dateA < today;
-        const isPastB = dateB < today;
-        const isTodayA = dateA.toDateString() === today.toDateString();
-        const isTodayB = dateB.toDateString() === today.toDateString();
-
-        // Today's reservations come first
-        if (isTodayA && !isTodayB) return -1;
-        if (!isTodayA && isTodayB) return 1;
-
-        // Future reservations come next, sorted by closest date first
-        if (!isPastA && !isPastB) return dateA - dateB;
-
-        // Past reservations come last, sorted by most recent first
-        if (isPastA && isPastB) return dateB - dateA;
-
-        // If one is past and the other is future, the future one comes first
-        return isPastA ? 1 : -1;
+        return new Date(a.dateTime) - new Date(b.dateTime);
       });
       setReservations(sortedReservations);
     } catch (error) {
@@ -125,16 +92,12 @@ const NieuweReservering = () => {
   useEffect(() => {
     fetchReservations();
 
-    // Add a focus listener
     const unsubscribe = navigation.addListener("focus", fetchReservations);
 
-    // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
 
-  // Determine if the user can edit or delete reservations
   const canEdit = user && user.role === "manager";
-
   return (
     <View style={styles.container}>
       <Text style={styles.screendescription}>

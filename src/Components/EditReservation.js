@@ -151,13 +151,13 @@ const EditReservation = ({ route, navigation }) => {
       </View>
       <View style={styles.inputContainer}>
         <Text style={styles.formlabel}>Tijdstip:</Text>
-        <TouchableOpacity onPress={showTimepicker}>
-          <Text style={styles.input}>{time}</Text>
+        <TouchableOpacity onPress={showTimepicker} style={styles.dateInput}>
+          <Text style={styles.dateText}>{time}</Text>
         </TouchableOpacity>
         {showTimePicker && (
           <DateTimePicker
             testID="timePicker"
-            value={date}
+            value={new Date()}
             mode="time"
             is24Hour={true}
             display={Platform.OS === "android" ? "spinner" : "default"}
@@ -166,7 +166,7 @@ const EditReservation = ({ route, navigation }) => {
         )}
       </View>
       <TouchableOpacity style={styles.button} onPress={handleSave}>
-        <Text style={styles.buttonText}>Reservering bijwerken</Text>
+        <Text style={styles.buttonText}>Reservering toevoegen</Text>
       </TouchableOpacity>
     </ScrollView>
   );
