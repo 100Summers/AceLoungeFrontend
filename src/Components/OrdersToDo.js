@@ -21,8 +21,7 @@ const AccordionItem = ({ item, fetchOrders }) => {
   });
 
   const navigateToBestellingen = () => {
-    // Navigate to the Bestellingen screen with the orderId as a parameter
-    navigation.navigate("Bestellingen", { orderId: item._id });
+    navigation.navigate("Bestellingen", { orderId: item._id, fromOrdersToDo: true });
   };
 
   const toggleAccordion = () => {
@@ -148,6 +147,7 @@ const OrdersToDo = () => {
           keyExtractor={(item) => item._id}
           // Prop to hide the vertical scroll indicator.
           showsVerticalScrollIndicator={false}
+          style={{ height: 225}}
         />
       </View>
     </View>

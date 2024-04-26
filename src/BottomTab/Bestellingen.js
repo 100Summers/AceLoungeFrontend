@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Image
 } from "react-native";
 import Header from "../Components/Header";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,6 +15,11 @@ import axios from "axios";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import FloatingButton from "../Components/FloatingButton";
 import { useRoute } from "@react-navigation/native";
+import { printAsync, PrintOptions } from 'expo-print';
+import { shareAsync } from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+import { Asset } from 'expo-asset';
+import * as MediaLibrary from 'expo-media-library';
 
 const Bestellingen = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
@@ -51,6 +57,184 @@ const Bestellingen = ({ navigation }) => {
       console.error("Error ofetching orders", error);
     }
   };
+
+  const getBase64Logo = async () => {
+    try {
+      const asset = Asset.fromModule(require('../../assets/AceLogo.png'));
+      await asset.downloadAsync();  // Ensure the asset is downloaded
+  
+      const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+  
+      return base64;
+    } catch (error) {
+      console.error("Failed to load logo:", error);
+    }
+  }
+
+  const generateReceipt = async (order) => {
+    const logoBase64 = await getBase64Logo();
+    // Create a map to store product quantities and details
+    const productMap = {};
+
+    order.products.forEach(product => {
+      if (productMap[product.name]) {
+        productMap[product.name].quantity += 1; // Increment quantity
+        productMap[product.name].subtotal += product.price;
+      } else {
+        productMap[product.name] = {
+          price: product.price,
+          quantity: 1,
+          subtotal: product.price
+        };
+      }
+    });
+
+    const htmlContent = `
+      <html>
+      <head>
+        <style>
+          #invoice-POS{
+            box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+            padding:4mm;
+            margin: 0 auto;
+            width: 44mm;
+            background: #FFF;
+          }
+          h1, h2, h3, p {
+            margin: 0;
+            padding: 0;
+          }
+          h1 {
+            font-size: 1.5em;
+            color: #222;
+          }
+          h2 {
+            font-size: .9em;
+          }
+          h3 {
+            font-size: 1.2em;
+            font-weight: 300;
+            line-height: 2em;
+          }
+          p {
+            font-size: .7em;
+            color: #666;
+            line-height: 1.2em;
+          }
+          #top, #mid, #bot {
+            border-bottom: 1px solid #EEE;
+          }
+          #top {
+            min-height: 100px;
+          }
+          #mid {
+            min-height: 80px;
+          }
+          #bot {
+            min-height: 50px;
+          }
+          .info {
+            display: block;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+          .tabletitle {
+            padding: 5px;
+            font-size: .5em;
+            background: #EEE;
+          }
+          .service {
+            border-bottom: 1px solid #EEE;
+          }
+          .item {
+            width: 24mm;
+          }
+          .itemtext {
+            font-size: .5em;
+          }
+          #legalcopy {
+            margin-top: 5mm;
+            text-align: center;
+          }
+          .legal {
+            font-size: .7em; /* Adjust font size as needed */
+            line-height: 1.2em; /* Adjust line height for better readability */
+          }
+          .logo img {
+            height: 50px;  /* Adjust this value as needed */
+            width: auto;   /* This will maintain the aspect ratio */
+          }          
+        </style>
+      </head>
+      <body>
+        <div id="invoice-POS">
+        <center id="top">
+        <div class="logo">
+        <img src="data:image/png;base64,${logoBase64}" alt="AceLoung
+        </div>
+        <div class="info"> 
+          <h2>AceLounge</h2>
+        </div><!--End Info-->
+      </center><!--End InvoiceTop-->
+          <div id="bot">
+            <div id="table">
+              <table>
+                <tr class="tabletitle">
+                  <td class="item"><h2>Item</h2></td>
+                  <td class="Hours"><h2>Qty</h2></td>
+                  <td class="Rate"><h2>Sub Total</h2></td>
+                </tr>
+                ${Object.keys(productMap).map(key => `
+                  <tr class="service">
+                    <td class="tableitem"><p class="itemtext">${key}</p></td>
+                    <td class="tableitem"><p class="itemtext">${productMap[key].quantity}</p></td>
+                    <td class="tableitem"><p class="itemtext">$${productMap[key].subtotal.toFixed(2)}</p></td>
+                  </tr>
+                `).join('')}
+                <tr class="tabletitle">
+                  <td></td>
+                  <td class="Rate"><h2>Total</h2></td>
+                  <td class="payment"><h2>$${order.totalPrice.toFixed(2)}</h2></td>
+                </tr>
+              </table>
+            </div>
+            <div id="legalcopy">
+              <p class="legal"><strong>Thank you.</p>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const { uri } = await printAsync({
+      html: htmlContent,
+      width: 612,
+      height: 792,
+      base64: true
+    });
+
+    const imageUri = await convertToImage(uri);
+    saveImageToGallery(imageUri);
+  };
+
+
+
+  const convertToImage = async (pdfUri) => {
+    // This function needs to be implemented based on your specific requirements
+    // For example, using a server-side service to convert PDF to JPG
+    return pdfUri; // Placeholder
+  };
+
+  const saveImageToGallery = async (imageUri) => {
+    const asset = await MediaLibrary.createAssetAsync(imageUri);
+    await MediaLibrary.createAlbumAsync("Download", asset, false);
+  };
+
 
   useEffect(() => {
     // Subscribe to the focus event to refresh orders whenever the screen is focused
@@ -110,19 +294,19 @@ const Bestellingen = ({ navigation }) => {
       if (response.status === 200) {
         // Call fetchOrders to refresh the list after status change
         fetchOrders();
-  
+
         // Optionally, handle any additional logic with the response data
         // For example, if you need to check for low stock products as in the original function
         if (response.data.lowStockProducts && response.data.lowStockProducts.length > 0) {
           // Display an alert or some form of notification to the user
           alert('Some products are running low on stock!');
-  
+
           // Optionally, list the products that are low on stock
           response.data.lowStockProducts.forEach(product => {
             console.log(`Product ${product.name} is low on stock. Only ${product.qty} left.`);
           });
         }
-  
+
         console.log('Order status updated:', response.data.updatedOrder);
       } else {
         throw new Error("Status bijwerken mislukt.");
@@ -132,15 +316,14 @@ const Bestellingen = ({ navigation }) => {
       Alert.alert("Fout", error.message || "Status bijwerken mislukt.");
     }
   };
-  
+
 
 
   const showStatusOptions = (orderId, currentStatus) => {
     let newStatus = currentStatus === "unprocessed" ? "processed" : "paid";
     Alert.alert(
       "Status aanpassen",
-      `Bestelling markeren als ${
-        newStatus === "processed" ? "Afgehandeld" : "Betaald"
+      `Bestelling markeren als ${newStatus === "processed" ? "Afgehandeld" : "Betaald"
       }?`,
       [
         { text: "Annuleren", style: "cancel" },
@@ -179,17 +362,17 @@ const Bestellingen = ({ navigation }) => {
 
                     <Text style={[styles.orderDetail, { fontSize: 18 }]}>
                       {new Date(item.orderDate).toDateString() ===
-                      new Date().toDateString()
+                        new Date().toDateString()
                         ? new Date(item.orderDate).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: false, // Add this option to use 24-hour format
-                          })
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false, // Add this option to use 24-hour format
+                        })
                         : new Date(item.orderDate).toLocaleDateString("nl", {
-                            year: "numeric",
-                            month: "2-digit",
-                            day: "2-digit",
-                          })}
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        })}
                     </Text>
                   </View>
                   <View style={styles.spaceBetweenRow}>
@@ -203,15 +386,15 @@ const Bestellingen = ({ navigation }) => {
                           item.status === "unprocessed"
                             ? "red"
                             : item.status === "processed"
-                            ? "orange"
-                            : "#4a9c3a",
+                              ? "orange"
+                              : "#4a9c3a",
                       }}
                     >
                       {item.status === "unprocessed"
                         ? "NIET AFGEHANDELD"
                         : item.status === "processed"
-                        ? "AFGEHANDELD"
-                        : "BETAALD"}
+                          ? "AFGEHANDELD"
+                          : "BETAALD"}
                     </Text>
                   </View>
                   <View style={styles.productCards}>
@@ -318,6 +501,13 @@ const Bestellingen = ({ navigation }) => {
                             <Icon name="trash" size={18} color="white" />
                           </TouchableOpacity>
                         )}
+                      <TouchableOpacity
+                        style={styles.receiptButton}
+                        onPress={() => generateReceipt(item)}
+                      >
+                        <Icon name="file-alt" size={18} color="white" />
+                      </TouchableOpacity>
+
                     </View>
                   </View>
                 </View>
@@ -449,4 +639,14 @@ const styles = StyleSheet.create({
   notes: {
     marginBottom: 10,
   },
+  receiptButton: {
+    marginLeft: 4,
+    padding: 10.75,
+    backgroundColor: "#007bff", // Set to a blue color
+    borderRadius: 5,
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  }
 });
