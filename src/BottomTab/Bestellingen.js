@@ -315,12 +315,14 @@ const Bestellingen = ({ navigation }) => {
                             <Icon name="trash" size={18} color="white" />
                           </TouchableOpacity>
                         )}
-                      <TouchableOpacity
-                        style={styles.receiptButton}
-                        onPress={() => handleReceiptPress(item)}
-                      >
-                        <Icon name="file-alt" size={18} color="white" />
-                      </TouchableOpacity>
+                      {item.status === "paid" && (
+                        <TouchableOpacity
+                          style={styles.receiptButton}
+                          onPress={() => handleReceiptPress(item)}
+                        >
+                          <Icon name="file-alt" size={18} color="white" />
+                        </TouchableOpacity>
+                      )}
                     </View>
                   </View>
                 </View>
