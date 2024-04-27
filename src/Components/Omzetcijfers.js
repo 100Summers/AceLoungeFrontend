@@ -199,35 +199,36 @@ const initialEndDate = today; // This is already today's date, so it's fine as i
       </View>
 
       {/* Display Revenue Data */}
-      <View style={styles.revenueDataContainer}>
-        <Text style={styles.revenueDataTitle}>Omzet:</Text>
-        {revenueData.map((revenue, index) => {
-          const date = new Date(revenue._id);
-          let formattedDate;
-          switch (timeframe) {
-            case "daily":
-              formattedDate = `${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear().toString().substr(-2)}`;
-              break;
-            case "monthly":
-              formattedDate = `${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear().toString().substr(-2)}`;
-              break;
-            case "yearly":
-              formattedDate = date.getFullYear().toString();
-              break;
-            default:
-              formattedDate = `${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}`;
-          }
+<View style={styles.revenueDataContainer}>
+  <Text style={styles.revenueDataTitle}>Omzet:</Text>
+  {revenueData.slice().reverse().map((revenue, index) => {  // Use slice to copy and reverse the array
+    const date = new Date(revenue._id);
+    let formattedDate;
+    switch (timeframe) {
+      case "daily":
+        formattedDate = `${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear().toString().substr(-2)}`;
+        break;
+      case "monthly":
+        formattedDate = `${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear().toString().substr(-2)}`;
+        break;
+      case "yearly":
+        formattedDate = date.getFullYear().toString();
+        break;
+      default:
+        formattedDate = `${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}`;
+    }
 
-          return (
-            <View key={index} style={styles.revenueDataRow}>
-              <Text style={styles.revenueDate}>{formattedDate}</Text>
-              <Text style={styles.revenueAmount}>
-                SRD {revenue.totalRevenue.toFixed(2)}
-              </Text>
-            </View>
-          );
-        })}
+    return (
+      <View key={index} style={styles.revenueDataRow}>
+        <Text style={styles.revenueDate}>{formattedDate}</Text>
+        <Text style={styles.revenueAmount}>
+          SRD {revenue.totalRevenue.toFixed(2)}
+        </Text>
       </View>
+    );
+  })}
+</View>
+
     </View>
   );
 };
