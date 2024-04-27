@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
-import { View, Text, StyleSheet, Image, Button, Alert } from 'react-native';
-import ViewShot from 'react-native-view-shot';
-import * as MediaLibrary from 'expo-media-library';
+import React, { useRef } from "react";
+import { View, Text, StyleSheet, Image, Button, Alert } from "react-native";
+import ViewShot from "react-native-view-shot";
+import * as MediaLibrary from "expo-media-library";
 
 const Receipt = ({ route }) => {
   const { order } = route.params;
@@ -10,17 +10,23 @@ const Receipt = ({ route }) => {
   const saveReceipt = async () => {
     try {
       const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission Required', 'We need access to your photo library to save the receipt.');
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission Required",
+          "We need access to your photo library to save the receipt."
+        );
         return;
       }
 
       const uri = await viewShotRef.current.capture();
       const asset = await MediaLibrary.createAssetAsync(uri);
-      await MediaLibrary.createAlbumAsync('Receipts', asset, false);
-      Alert.alert('Success', 'Receipt saved to your photo library.');
+      await MediaLibrary.createAlbumAsync("Receipts", asset, false);
+      Alert.alert("Success", "Receipt saved to your photo library.");
     } catch (error) {
-      Alert.alert('Error', `An error occurred while saving the receipt: ${error.message}`);
+      Alert.alert(
+        "Error",
+        `An error occurred while saving the receipt: ${error.message}`
+      );
     }
   };
 
@@ -41,23 +47,47 @@ const Receipt = ({ route }) => {
   return (
     <View style={styles.container}>
       {/* Add padding to ViewShot */}
-      <ViewShot ref={viewShotRef} style={styles.viewShot} options={{ format: 'jpeg', quality: 1 }}>
+
+      <Button
+        style={styles.savebutton}
+        title="Save Receipt"
+        onPress={saveReceipt}
+      />
+      <ViewShot
+        ref={viewShotRef}
+        style={styles.viewShot}
+        options={{ format: "jpg", quality: 1 }}
+      >
         {/* Inner container with additional padding */}
         <View style={styles.content}>
           <View style={styles.top}>
-            <Image source={require('../../assets/AceLogo.png')} style={styles.logo} />
-            <Text style={styles.h2}>AceLounge</Text>
-            <Text style={styles.p}>Contact Us</Text>
-            <Text style={styles.p}>Address: Street, City, State 00000</Text>
-            <Text style={styles.p}>Email: info@acelounge.com</Text>
-            <Text style={styles.p}>Phone: 555-555-5555</Text>
-            
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 40,
+              }}
+            >
+              <Image
+                source={require("../../assets/AceLogo.png")}
+                style={styles.logo}
+              />
+              <View>
+                <Text style={styles.h2}>Ace Lounge Paramaribo</Text>
+                <Text style={styles.adres}>
+                  Anamoestraat 3 | Paramaribo | 020-2839723
+                </Text>
+              </View>
+            </View>
+
             <View style={styles.space}></View>
 
             <View style={styles.headerRow}>
-              <Text style={[styles.header, styles.itemHeader]}>Item</Text>
+              <Text style={[styles.header, styles.itemHeader]}>Product</Text>
               <Text style={[styles.header, styles.qtyHeader]}>Qty</Text>
-              <Text style={[styles.header, styles.subtotalHeader]}>Sub Total</Text>
+              <Text style={[styles.header, styles.subtotalHeader]}>
+                Subtotal
+              </Text>
             </View>
           </View>
 
@@ -65,123 +95,159 @@ const Receipt = ({ route }) => {
             {Object.keys(productMap).map((key) => (
               <View style={styles.tableRow} key={key}>
                 <Text style={[styles.itemText, styles.itemData]}>{key}</Text>
-                <Text style={[styles.itemText, styles.qtyData]}>{productMap[key].quantity}</Text>
-                <Text style={[styles.itemText, styles.subtotalData]}>{`$${productMap[key].subtotal.toFixed(2)}`}</Text>
+                <Text style={[styles.itemText, styles.qtyData]}>
+                  {productMap[key].quantity}
+                </Text>
+                <Text
+                  style={[styles.itemText, styles.subtotalData]}
+                >{`SRD ${productMap[key].subtotal.toFixed(2)}`}</Text>
               </View>
             ))}
 
             <View style={styles.totalRow}>
               <Text style={styles.total}>Total</Text>
-              <Text style={[styles.total, styles.totalAmount]}>{`$${order.totalPrice.toFixed(2)}`}</Text>
+              <Text
+                style={[styles.total, styles.totalAmount]}
+              >{`SRD ${order.totalPrice.toFixed(2)}`}</Text>
             </View>
-
+            <Text style={styles.date}>31-04-2024 03:15</Text>
             <Text style={styles.legal}>
-              <Text style={styles.strong}>Thank you for your business!</Text> Payment is expected within 31 days. There will be a 5% interest charge per month on late invoices.
+              Thanks for visiting us. Scan below QR code and leave us a review!
             </Text>
+            <Image
+              source={require("../../assets/qrace.png")}
+              style={styles.qrcode}
+            />
           </View>
         </View>
       </ViewShot>
-
-      <Button title="Save Receipt" onPress={saveReceipt} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    padding: 10,
-    width: '100%',
+    backgroundColor: "red",
+    padding: 0,
+    width: "100%",
+    height: "800",
   },
   viewShot: {
-    padding: 30, // Add padding around the entire ViewShot
+    padding: 0, // Add padding around the entire ViewShot
   },
   content: {
-    backgroundColor: '#fff',
-    padding: 20, // Add additional padding inside the content
+    backgroundColor: "#fff",
+    padding: 0, // Add additional padding inside the content
   },
   top: {
     borderBottomWidth: 1,
-    borderBottomColor: '#000',
+    borderBottomColor: "#000",
   },
   logo: {
-    height: 40,
-    width: 40,
+    height: 55,
+    width: 55,
     marginBottom: 10,
+    marginTop: 10,
   },
   h2: {
-    fontSize: 12,
-    fontWeight: 'bold',
+    fontSize: 27,
+    fontWeight: "bold",
+    marginLeft: 12,
+    marginBottom: 2,
+    marginTop: 0,
+  },
+  adres: {
+    marginLeft: 12,
+    textAlign: "center",
+    fontSize: 15,
   },
   p: {
-    fontSize: 10,
+    fontSize: 16,
   },
   space: {
     height: 20,
   },
   headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   header: {
-    fontSize: 10,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: "bold",
   },
   itemHeader: {
     flex: 3,
-    textAlign: 'left',
+    textAlign: "left",
+    fontSize: 16,
   },
   qtyHeader: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtotalHeader: {
     flex: 2,
-    textAlign: 'right',
+    textAlign: "right",
+  },
+  savebutton: {
+    position: "absolute",
+    zIndex: 100,
   },
   bot: {
     borderBottomWidth: 1,
-    borderBottomColor: '#000',
+    borderBottomColor: "#000",
   },
   tableRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 5,
   },
   itemText: {
-    fontSize: 10,
+    fontSize: 16,
   },
   itemData: {
     flex: 3,
-    textAlign: 'left',
+    textAlign: "left",
   },
   qtyData: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtotalData: {
     flex: 2,
-    textAlign: 'right',
+    textAlign: "right",
+  },
+  date: {
+    marginTop: 70,
+    fontSize: 16,
+    fontSize: 16,
   },
   totalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 10,
   },
   total: {
-    fontSize: 12,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: "bold",
   },
   totalAmount: {
-    fontSize: 12,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  qrcode: {
+    marginTop: 20,
+    marginBottom: 50,
   },
   legal: {
-    fontSize: 8,
-    marginTop: 10,
+    fontSize: 16,
+    marginTop: 50,
+    marginBottom: 15,
+  },
+  legaltwo: {
+    fontSize: 16,
   },
   strong: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
