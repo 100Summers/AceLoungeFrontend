@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, Button, Alert } from "react-native";
 import ViewShot from "react-native-view-shot";
 import * as MediaLibrary from "expo-media-library";
@@ -6,6 +6,7 @@ import * as MediaLibrary from "expo-media-library";
 const Receipt = ({ route }) => {
   const { order } = route.params;
   const viewShotRef = useRef(null);
+  const [currentDateTime, setCurrentDateTime] = useState(new Date()); // State to store the current date and time
 
   const saveReceipt = async () => {
     try {
@@ -30,6 +31,10 @@ const Receipt = ({ route }) => {
     }
   };
 
+  useEffect(() => {
+    setCurrentDateTime(new Date()); // Update the date and time when the component mounts
+  }, []);
+
   const productMap = {};
   order.products.forEach((product) => {
     if (productMap[product.name]) {
@@ -46,8 +51,6 @@ const Receipt = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      {/* Add padding to ViewShot */}
-
       <Button
         style={styles.savebutton}
         title="Save Receipt"
@@ -58,7 +61,6 @@ const Receipt = ({ route }) => {
         style={styles.viewShot}
         options={{ format: "jpg", quality: 1 }}
       >
-        {/* Inner container with additional padding */}
         <View style={styles.content}>
           <View style={styles.top}>
             <View
@@ -110,7 +112,7 @@ const Receipt = ({ route }) => {
                 style={[styles.total, styles.totalAmount]}
               >{`SRD ${order.totalPrice.toFixed(2)}`}</Text>
             </View>
-            <Text style={styles.date}>31-04-2024 03:15</Text>
+            <Text style={styles.date}>{currentDateTime.toLocaleString()}</Text>
             <Text style={styles.legal}>
               Thanks for visiting us. Scan below QR code and leave us a review!
             </Text>
@@ -160,9 +162,6 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     textAlign: "center",
     fontSize: 15,
-  },
-  p: {
-    fontSize: 16,
   },
   space: {
     height: 20,
@@ -219,7 +218,8 @@ const styles = StyleSheet.create({
   date: {
     marginTop: 70,
     fontSize: 16,
-    fontSize: 16,
+    textAlign: 'center',
+    marginVertical: 10,
   },
   totalRow: {
     flexDirection: "row",
@@ -242,12 +242,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 50,
     marginBottom: 15,
-  },
-  legaltwo: {
-    fontSize: 16,
-  },
-  strong: {
-    fontWeight: "bold",
   },
 });
 
