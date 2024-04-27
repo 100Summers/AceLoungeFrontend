@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   date: {
     marginTop: 70,
     fontSize: 16,
-    textAlign: 'center',
+    // textAlign: 'center',
     marginVertical: 10,
   },
   totalRow: {
